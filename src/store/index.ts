@@ -1,9 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
+import albums from './slices/albums';
 import sidebar from './slices/sidebar';
+import todos from './slices/todos';
 
 export const store = configureStore({
   reducer: {
     sidebar,
+    albums,
+    todos,
   },
 });
 

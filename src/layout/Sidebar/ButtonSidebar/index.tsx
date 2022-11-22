@@ -13,13 +13,7 @@ export const ButtonSidebar: FC<Props> = ({ isOpen }) => {
   return (
     <>
       {isOpen ? (
-        <Button
-          mr="auto"
-          position="relative"
-          p={0}
-          m={0}
-          background="#fff"
-          onClick={() => dispatch(setIsOpen())}>
+        <Button mr="auto" p={0} m={0} background="#fff" onClick={() => dispatch(setIsOpen())}>
           <Icon mr="10px" as={ViewOffIcon} />
           Toggle Sidebar
         </Button>
