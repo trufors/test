@@ -4,9 +4,10 @@ import styled from '@emotion/styled';
 import { ChangeEvent, FC, KeyboardEvent, SyntheticEvent, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
-  fetchCreateTodos,
-  fetchDeleteTodos,
+  fetchCreateTodo,
+  fetchDeleteTodo,
   fetchTodos,
+  fetchUpdateTodo,
   selectTodosData,
   Todo,
 } from '../../store/slices/todos';
@@ -19,7 +20,7 @@ const ScrollContainer = styled(Box)`
 
 export const Todos: FC = () => {
   const dispatch = useAppDispatch();
-  const todos = useAppSelector(selectTodosData);
+  const { entities, ids } = useAppSelector(selectTodosData);
   useEffect(() => {
     dispatch(fetchTodos());
   }, []);
@@ -33,8 +34,16 @@ export const Todos: FC = () => {
         title: value,
         completed: false,
       };
-      dispatch(fetchCreateTodos(todo));
+      dispatch(fetchCreateTodo(todo));
     }
+  };
+  const editTodo = (update: Todo, method: string): void => {
+    console.log(method);
+    const todo: Todo = {
+      ...update,
+      completed: !update.completed,
+    };
+    dispatch(fetchUpdateTodo(todo));
   };
 
   return (
@@ -79,12 +88,12 @@ export const Todos: FC = () => {
         boxShadow="xl"
         rounded="md"
         p="20px 25px">
-        {Object.values(todos).length &&
-          Object.values(todos).map((item) => (
+        {ids.length &&
+          ids.map((id) => (
             <Box
               border="1px"
               borderColor="grey.500"
-              key={item!.id}
+              key={id}
               mb="20px"
               boxShadow="xl"
               p="10px 15px"
@@ -92,8 +101,13 @@ export const Todos: FC = () => {
               alignItems="center"
               rounded="md"
               display="flex">
-              <Checkbox colorScheme="green" mr="auto" />
-              <Text m="0 auto">{item!.title}</Text>
+              <Checkbox
+                isChecked={entities[id]!.completed}
+                onChange={() => editTodo(entities[id]!, 'completed')}
+                colorScheme="green"
+                mr="auto"
+              />
+              <Text m="0 auto">{entities[id]!.title}</Text>
               <Box ml="auto">
                 <IconButton
                   size="xl"
@@ -106,7 +120,7 @@ export const Todos: FC = () => {
                   size="xl"
                   cursor="pointer"
                   as={CloseIcon}
-                  onClick={() => dispatch(fetchDeleteTodos(item!.id))}
+                  onClick={() => dispatch(fetchDeleteTodo(entities[id]!.id))}
                   aria-label="delete todos"
                 />
               </Box>
