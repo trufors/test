@@ -41,7 +41,7 @@ export const Albums: FC = () => {
           Pick Album
         </Heading>
       </Flex>
-      <Grid templateColumns="repeat(4, 1fr)" h="" gap={10}>
+      <Grid templateColumns="repeat(4, 1fr)" gap={10}>
         {data.length && data.map((item) => <Album key={item.id} item={item} />)}
       </Grid>
     </>

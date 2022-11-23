@@ -1,3 +1,3 @@
 export * from './Albums';
-export * from './Posts';
+export * from './PostsPage';
 export * from './Todos';

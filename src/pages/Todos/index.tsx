@@ -1,10 +1,15 @@
 import { CloseIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Box, Checkbox, Flex, Heading, IconButton, Input, Text } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import axios from 'axios';
-import { FC, useEffect } from 'react';
+import { ChangeEvent, FC, KeyboardEvent, SyntheticEvent, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { selectTodosData, setTodos } from '../../store/slices/todos';
+import {
+  fetchCreateTodos,
+  fetchDeleteTodos,
+  fetchTodos,
+  selectTodosData,
+  Todo,
+} from '../../store/slices/todos';
 
 const ScrollContainer = styled(Box)`
   &::-webkit-scrollbar {
@@ -14,12 +19,24 @@ const ScrollContainer = styled(Box)`
 
 export const Todos: FC = () => {
   const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state) => state.todos);
+  const todos = useAppSelector(selectTodosData);
   useEffect(() => {
-    axios
-      .get(`https://jsonplaceholder.typicode.com/users/1/todos`)
-      .then((res) => dispatch(setTodos(res.data)));
+    dispatch(fetchTodos());
   }, []);
+  const keyDown = (e: KeyboardEvent) => {
+    if (e.code === 'Enter') {
+      const { value } = e.target as HTMLInputElement;
+      const id = Object.values(todos).length + 1;
+      const todo: Todo = {
+        id,
+        userId: 1,
+        title: value,
+        completed: false,
+      };
+      dispatch(fetchCreateTodos(todo));
+    }
+  };
+
   return (
     <>
       <Heading as="h2" fontWeight="600" fontSize="28px" lineHeight="36px" mb="24px" color="#90a0b7">
@@ -42,7 +59,8 @@ export const Todos: FC = () => {
         placeholder="Insert your todos"
         boxShadow="xl"
         rounded="md"
-        mb="20px"></Input>
+        mb="20px"
+        onKeyDown={(e) => keyDown(e)}></Input>
       <Flex color="#90a0b7" justifyContent="space-between" mb="10px">
         <Heading
           as="h3"
@@ -61,14 +79,36 @@ export const Todos: FC = () => {
         boxShadow="xl"
         rounded="md"
         p="20px 25px">
-        {data.length &&
-          data.map((item) => (
-            <Box key={item.id} mb="20px" boxShadow="xl" rounded="md" display="flex">
-              <Checkbox colorScheme="green" defaultChecked mr="auto" />
-              <Text m="0 auto">{item.title}</Text>
+        {Object.values(todos).length &&
+          Object.values(todos).map((item) => (
+            <Box
+              border="1px"
+              borderColor="grey.500"
+              key={item!.id}
+              mb="20px"
+              boxShadow="xl"
+              p="10px 15px"
+              h="50px"
+              alignItems="center"
+              rounded="md"
+              display="flex">
+              <Checkbox colorScheme="green" mr="auto" />
+              <Text m="0 auto">{item!.title}</Text>
               <Box ml="auto">
-                <IconButton as={EditIcon} aria-label="edit todos" />
-                <IconButton as={CloseIcon} aria-label="delete todos" />
+                <IconButton
+                  size="xl"
+                  cursor="pointer"
+                  as={EditIcon}
+                  aria-label="edit todos"
+                  mr="10px"
+                />
+                <IconButton
+                  size="xl"
+                  cursor="pointer"
+                  as={CloseIcon}
+                  onClick={() => dispatch(fetchDeleteTodos(item!.id))}
+                  aria-label="delete todos"
+                />
               </Box>
             </Box>
           ))}

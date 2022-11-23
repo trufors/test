@@ -45,4 +45,5 @@ export const SectionStyled = styled.section`
   grid-area: content;
   background: #f5f6f8;
   padding: 24px 36px;
+  height: 100vh;
 `;

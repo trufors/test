@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import albums from './slices/albums';
+import posts from './slices/posts';
 import sidebar from './slices/sidebar';
 import todos from './slices/todos';
 
@@ -8,6 +9,7 @@ export const store = configureStore({
     sidebar,
     albums,
     todos,
+    posts,
   },
 });
 

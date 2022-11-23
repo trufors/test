@@ -11,7 +11,7 @@ export const MenuSidebar: FC<Props> = ({ isOpen }) => {
   return (
     <List fontSize={16} spacing={3}>
       <ListItem mb="16px">
-        <NavLink to="/">
+        <NavLink to="/posts">
           <ListIcon as={ChatIcon} color="black.500" />
           {isOpen && 'Posts'}
         </NavLink>
