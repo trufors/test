@@ -1,22 +1,22 @@
-import { createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createEntityAdapter, createSlice, Update } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../index';
 import { HttpService } from '../../api';
 
-export type Todo = {
+export type TodoElement = {
   userId: number;
   id: number;
   title: string;
   completed: boolean;
 };
 
-const todosAdapter = createEntityAdapter<Todo>({
+const todosAdapter = createEntityAdapter<TodoElement>({
   sortComparer: (a, b) => b.id - a.id,
 });
 
 export const fetchTodos = createAsyncThunk('todos/fetchTodos', async (_, thunkAPI) => {
   const { data } = await HttpService.get('/users/1/todos');
-  return data as Todo[];
+  return data as TodoElement[];
 });
 
 export const fetchDeleteTodo = createAsyncThunk(
@@ -29,7 +29,7 @@ export const fetchDeleteTodo = createAsyncThunk(
 
 export const fetchCreateTodo = createAsyncThunk(
   'todos/fetchCreateTodos',
-  async (todo: Todo, thunkAPI) => {
+  async (todo: TodoElement, thunkAPI) => {
     const { data } = await HttpService.post('/todos', todo);
     return todo;
   },
@@ -37,7 +37,7 @@ export const fetchCreateTodo = createAsyncThunk(
 
 export const fetchUpdateTodo = createAsyncThunk(
   'todos/fetchUpdateTodo',
-  async (todo: Todo, thunkAPI) => {
+  async (todo: TodoElement, thunkAPI) => {
     const response = await HttpService.put(`/todos/${todo.id}`, todo);
     console.log(response);
     return todo;
@@ -47,13 +47,16 @@ export const fetchUpdateTodo = createAsyncThunk(
 export const todosSlice = createSlice({
   name: 'todos',
   initialState: todosAdapter.getInitialState(),
-  reducers: {},
+  reducers: {
+    updateTodos(state, { payload }) {
+      todosAdapter.setAll(state, payload);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchTodos.pending, () => {})
       .addCase(fetchTodos.fulfilled, (state, { payload }) => {
         todosAdapter.addMany(state, payload);
-        console.log(todosAdapter);
       })
       .addCase(fetchDeleteTodo.fulfilled, (state, { payload }) => {
         todosAdapter.removeOne(state, payload);
@@ -70,7 +73,7 @@ export const todosSlice = createSlice({
   },
 });
 
-export const {} = todosSlice.actions;
+export const { updateTodos } = todosSlice.actions;
 
 export const selectTodosData = (state: RootState) => state.todos;
 

@@ -33,13 +33,14 @@ export const ActiveAlbum: FC = () => {
       </Flex>
       <Box
         transition="all easy 1s"
+        m="0 auto"
         rounded="md"
         boxShadow="xl"
         bg="white"
         h="400px"
         color="white"
         mb="50px"
-        w="100%"
+        w="1400px"
         overflow="hidden"
         p="10px"
         bgColor="rgb(0 0 0 / 6%)">
@@ -75,6 +76,7 @@ export const ActiveAlbum: FC = () => {
                       alignItems="center"
                       onClick={(e) => console.log(e.target)}>
                       <Img src={item.thumbnailUrl} w="150px" h="150px" mb="5px" />
+
                       <Text textAlign="center" color="black" fontSize="10px">
                         {item.title}
                       </Text>

@@ -1,44 +1,37 @@
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Flex,
-  Heading,
-  Box,
-  Text,
-  GridItem,
-  Grid,
-} from '@chakra-ui/react';
-import styled from '@emotion/styled';
+import { Flex, Heading, Box, Text, Button } from '@chakra-ui/react';
 import { FC, useEffect } from 'react';
-import { HttpService } from '../../api';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setPosts } from '../../store/slices/posts';
-import { ActivePost } from './ActivePost';
-import { Posts } from './Posts';
 
-const GridScrollContainer = styled(Grid)`
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
+import { useAppDispatch } from '../../hooks';
+import { fetchPosts } from '../../store/slices/posts';
+import { Posts } from './Posts';
 
 export const PostsPage: FC = () => {
   const dispatch = useAppDispatch();
-  const { posts, activePostId } = useAppSelector((state) => state.posts);
+
   useEffect(() => {
-    HttpService.get('/posts/').then((res) => {
-      dispatch(setPosts(res.data));
-    });
-  }, [posts]);
+    dispatch(fetchPosts());
+  }, []);
   return (
     <>
       <Heading as="h2" fontWeight="600" fontSize="28px" lineHeight="36px" mb="24px" color="#90a0b7">
         Posts
       </Heading>
+      <Flex color="#90a0b7" justifyContent="space-between" mb="10px">
+        <Heading
+          as="h3"
+          fontWeight="600"
+          fontSize="16px"
+          lineHeight="24px"
+          mb="10px"
+          color="#90a0b7">
+          Post feed
+        </Heading>
+        <Button bgColor="white" border="1px" borderColor="lightgrey">
+          Create your post
+        </Button>
+      </Flex>
 
-      {activePostId ? <ActivePost /> : <></>}
-      <Posts posts={posts} />
+      <Posts />
     </>
   );
 };
