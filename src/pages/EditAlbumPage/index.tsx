@@ -14,7 +14,7 @@ import styled from '@emotion/styled';
 import { FC, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchAlbums, selectAlbums } from '../../store/slices/albums';
+import { fetchAlbums, selectAlbumById, selectAlbums } from '../../store/slices/albums';
 
 import { CloseButton } from '@chakra-ui/react';
 import { Album } from '../Albums/Album';
@@ -42,8 +42,6 @@ export const EditAlbumPage: FC = () => {
       <Heading as="h2" fontWeight="600" fontSize="28px" lineHeight="36px" mb="24px" color="#90a0b7">
         Albums
       </Heading>
-
-      {/* {activeAlbum ? <ActiveAlbum /> : ''} */}
       <Flex color="#90a0b7" justifyContent="space-between" mb="10px" alignItems="center">
         <Heading as="h3" fontWeight="600" fontSize="16px" lineHeight="24px" color="#90a0b7">
           Edit Album
@@ -52,10 +50,6 @@ export const EditAlbumPage: FC = () => {
           Save
         </Button>
       </Flex>
-      <FormControl bgColor="white" boxShadow="xl" rounded="md" mb="25px" p="10px">
-        <FormLabel borderBottom="1px solid lightgrey"> Album title</FormLabel>
-        <Input type="email" variant="filled" placeholder="Insert your title" />
-      </FormControl>
       <GridScrollContainer
         overflow="scroll"
         templateColumns="repeat(4, 1fr)"

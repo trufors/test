@@ -1,5 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import albums from './slices/albums';
+import albums from './slices/albums/slice';
+
+import { albumsSlice } from './slices/albums';
 import comments from './slices/comments';
 import photos from './slices/photos';
 import posts from './slices/posts';
