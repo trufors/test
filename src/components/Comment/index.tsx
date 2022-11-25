@@ -2,9 +2,9 @@ import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { Collapse, Icon, Text, Box, useDisclosure } from '@chakra-ui/react';
 import { FC } from 'react';
 import { CommentsState } from '../../store/slices/comments';
-import { CommentForm } from './CommentForm';
+import { CommentForm } from '../../pages/PostsPage/CommentForm';
 
-export const Comment: FC<CommentsState> = ({ email, name, body, id, comments, postId }) => {
+export const Comment: FC<CommentsState> = ({ email, name, body, id, postId }) => {
   const { isOpen, onToggle } = useDisclosure();
 
   return (
@@ -27,7 +27,6 @@ export const Comment: FC<CommentsState> = ({ email, name, body, id, comments, po
       <Box flex="1" textAlign="left">
         {body}
       </Box>
-      <CommentForm commentId={id} id={comments!.length} postId={postId} />
     </Box>
   );
 };

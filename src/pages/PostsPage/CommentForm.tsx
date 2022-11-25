@@ -46,7 +46,6 @@ export const CommentForm: FC<CommentFormProps> = ({ commentId, id, postId }) => 
       body,
       name,
     };
-    dispatch(addNewComment({ postId, comment }));
   };
 
   return (

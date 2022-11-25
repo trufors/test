@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { FC, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setAlbumsState } from '../../store/slices/albums';
+import { fetchAlbums, selectAlbums } from '../../store/slices/albums';
 import { Album } from './Album';
 import { CloseButton } from '@chakra-ui/react';
 import { ActiveAlbum } from './ActiveAlbum';
@@ -12,16 +12,19 @@ type Fetch = {
   data: any;
 };
 
+const GridScrollContainer = styled(Grid)`
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
 export const Albums: FC = () => {
   const dispatch = useAppDispatch();
-  const { activeAlbum } = useAppSelector((state) => state.albums);
+  const { entities, ids } = useAppSelector(selectAlbums);
 
   useEffect(() => {
-    axios
-      .get('https://jsonplaceholder.typicode.com/albums/')
-      .then((res) => dispatch(setAlbumsState(res.data)));
-  }, [activeAlbum]);
-  const data = useAppSelector((state) => state.albums.data);
+    dispatch(fetchAlbums());
+  }, []);
 
   return (
     <>
@@ -29,7 +32,7 @@ export const Albums: FC = () => {
         Albums
       </Heading>
 
-      {activeAlbum ? <ActiveAlbum /> : ''}
+      {/* {activeAlbum ? <ActiveAlbum /> : ''} */}
       <Flex color="#90a0b7" justifyContent="space-between" mb="10px">
         <Heading
           as="h3"
@@ -41,9 +44,19 @@ export const Albums: FC = () => {
           Pick Album
         </Heading>
       </Flex>
-      <Grid templateColumns="repeat(4, 1fr)" gap={10}>
-        {data.length && data.map((item) => <Album key={item.id} item={item} />)}
-      </Grid>
+      <GridScrollContainer
+        overflow="scroll"
+        templateColumns="repeat(4, 1fr)"
+        gap={10}
+        bgColor="white"
+        maxHeight={'850px'}
+        boxShadow="xl"
+        rounded="md"
+        p="20px 25px">
+        {ids && ids.map((id) => <Album key={id} {...entities[id]!} />)}
+      </GridScrollContainer>
     </>
   );
 };
+
+// maxHeight={activeAlbum ? '350px' : '850px'}

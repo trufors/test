@@ -1,12 +1,14 @@
 import { Flex, Heading, Box, Text, Button } from '@chakra-ui/react';
 import { FC, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch } from '../../hooks';
 import { fetchPosts } from '../../store/slices/posts';
-import { Posts } from './Posts';
+import { Posts } from '../../components';
 
 export const PostsPage: FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchPosts());
@@ -26,7 +28,11 @@ export const PostsPage: FC = () => {
           color="#90a0b7">
           Post feed
         </Heading>
-        <Button bgColor="white" border="1px" borderColor="lightgrey">
+        <Button
+          onClick={() => navigate('create')}
+          bgColor="white"
+          border="1px"
+          borderColor="lightgrey">
           Create your post
         </Button>
       </Flex>

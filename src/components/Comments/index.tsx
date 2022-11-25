@@ -2,7 +2,7 @@ import { Box } from '@chakra-ui/react';
 import { FC, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchComments, selectCommentsByPostId } from '../../store/slices/comments';
-import { Comment } from './Comment';
+import { Comment } from '../Comment';
 
 type CommentsProps = {
   id: number;

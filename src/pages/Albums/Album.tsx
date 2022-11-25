@@ -1,24 +1,22 @@
-import { Box, GridItem } from '@chakra-ui/react';
+import { Box, Button, ButtonGroup, GridItem } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 import { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setActiveAlbum } from '../../store/slices/albums';
+import { AlbumType } from '../../store/slices/albums';
 
-export const Album: FC<any> = ({ item }) => {
+export const Album: FC<AlbumType> = ({ userId, title, id }) => {
   const dispatch = useAppDispatch();
-  const activeAlbum = useAppSelector((state) => state.albums);
+  const navigate = useNavigate();
   return (
     <>
-      <GridItem
-        onClick={() => dispatch(setActiveAlbum(item.id))}
-        boxShadow="xl"
-        rounded="md"
-        bg="white"
-        w="100%"
-        h="300"
-        p="20px">
+      <GridItem boxShadow="xl" rounded="md" bg="white" w="100%" h="300" p="20px">
+        <ButtonGroup>
+          <Button onClick={() => navigate(`${id}/edit`)}>Edit</Button>
+          <Button>Delete</Button>
+        </ButtonGroup>
         <Box h="100%" w="100%" bg="white" textAlign="center" m="auto 0">
-          {item.title}
+          {title}
         </Box>
       </GridItem>
     </>

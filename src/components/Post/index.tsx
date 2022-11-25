@@ -13,19 +13,21 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../hooks';
 import { fetchDeletePost, PostsState } from '../../store/slices/posts';
-import { Comments } from './Comments';
+import { Comments } from '../Comments';
 
 export const Post: FC<PostsState> = ({ title, id, body }) => {
   const { isOpen, onToggle } = useDisclosure();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   return (
     <Card boxShadow="xl" rounded="md" mb="25px" bg="white" w="100%" p="20px">
       <CardHeader display="flex" justifyContent="space-between">
         <Heading size="md">{title}</Heading>
         <ButtonGroup>
-          <Button>Edit</Button>
+          <Button onClick={() => navigate(`${id}/edit`)}>Edit</Button>
           <Button onClick={() => dispatch(fetchDeletePost(id))}>Delete</Button>
         </ButtonGroup>
       </CardHeader>

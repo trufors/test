@@ -13,7 +13,7 @@ export const Layout: FC = () => {
       <AsideStyled isOpen={isOpen}>
         <Sidebar isOpen={isOpen} />
       </AsideStyled>
-      <SectionStyled>
+      <SectionStyled isOpen={isOpen}>
         <Outlet />
       </SectionStyled>
     </MainStyled>

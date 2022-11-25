@@ -37,10 +37,9 @@ export const ActiveAlbum: FC = () => {
         rounded="md"
         boxShadow="xl"
         bg="white"
-        h="400px"
+        maxHeight="400px"
         color="white"
         mb="50px"
-        w="1400px"
         overflow="hidden"
         p="10px"
         bgColor="rgb(0 0 0 / 6%)">
@@ -59,32 +58,6 @@ export const ActiveAlbum: FC = () => {
             aria-label="prev"
           />
 
-          <Flex overflow="hidden" p="10px" justifyContent="space-evenly">
-            {currentAlbum &&
-              currentAlbum.map((item, id) => {
-                if (id > 4) {
-                  return (
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      rounded="md"
-                      bg="white"
-                      h="200px"
-                      w="200px"
-                      p="5px"
-                      mr="5px"
-                      alignItems="center"
-                      onClick={(e) => console.log(e.target)}>
-                      <Img src={item.thumbnailUrl} w="150px" h="150px" mb="5px" />
-
-                      <Text textAlign="center" color="black" fontSize="10px">
-                        {item.title}
-                      </Text>
-                    </Box>
-                  );
-                }
-              })}
-          </Flex>
           <IconButton
             colorScheme="teal"
             bgColor="rgb(0 0 0 / 6%)"

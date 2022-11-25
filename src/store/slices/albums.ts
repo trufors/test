@@ -1,39 +1,36 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../index';
+import { HttpService } from '../../api';
 
-interface AlbumsState {
-  data: any;
-  activeAlbum: number;
-  currentAlbum: any;
-}
-
-const initialState: AlbumsState = {
-  data: [],
-  activeAlbum: 0,
-  currentAlbum: [],
+export type AlbumType = {
+  userId: string;
+  id: number;
+  title: string;
 };
+
+const albumsEntityAdapter = createEntityAdapter<AlbumType>({
+  sortComparer: (a, b) => b.id - a.id,
+});
+
+export const fetchAlbums = createAsyncThunk('albums/fetchAlbum', async (_, thunkAPI) => {
+  const { data } = await HttpService.get(`/users/1/albums`);
+  return data as AlbumType[];
+});
 
 export const albumsSlice = createSlice({
   name: 'albums',
-  initialState,
-  reducers: {
-    setAlbumsState: (state, { payload }) => {
-      state.data = payload;
-    },
-    setActiveAlbum: (state, { payload }) => {
-      console.log(payload);
-      state.activeAlbum = payload;
-    },
-    setCurrentAlbum: (state, { payload }) => {
-      console.log(payload);
-      state.currentAlbum = payload;
-    },
+  initialState: albumsEntityAdapter.getInitialState(),
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchAlbums.fulfilled, (state, { payload }) => {
+      albumsEntityAdapter.addMany(state, payload);
+    });
   },
 });
 
-export const { setAlbumsState, setActiveAlbum, setCurrentAlbum } = albumsSlice.actions;
+export const {} = albumsSlice.actions;
 
-export const selectData = (state: RootState) => state.albums.data;
+export const selectAlbums = (state: RootState) => state.albums;
 
 export default albumsSlice.reducer;

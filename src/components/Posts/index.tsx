@@ -4,7 +4,7 @@ import { FC } from 'react';
 import { useAppSelector } from '../../hooks';
 import { selectPosts } from '../../store/slices/posts';
 
-import { Post } from './Post';
+import { Post } from '../Post';
 
 const FlexScrollContainer = styled(Flex)`
   &::-webkit-scrollbar {
