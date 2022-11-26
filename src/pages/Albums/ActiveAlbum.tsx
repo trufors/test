@@ -1,22 +1,27 @@
-import { FC, useEffect } from 'react';
-import axios from 'axios';
-import { Box, Center, CloseButton, Flex, Heading, Img, Text } from '@chakra-ui/react';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setActiveAlbum, setCurrentAlbum } from '../../store/slices/albums';
+import { createRef, FC, RefObject, useEffect, useRef } from 'react';
+import { Box, CloseButton, Flex, Heading } from '@chakra-ui/react';
 import { IconButton } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import { TitleStyled } from '../../layout/styled';
 
-export const ActiveAlbum: FC = () => {
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { FetchParams } from '../../types';
+import { selectPhotosById } from '../../store/slices/photos/selectors';
+import { fetchPhotos } from '../../store/slices/photos/asyncThunkPhotos';
+import { Photo } from '../../components/Photo';
+import { setActiveAlbum } from '../../store/slices/albums/slice';
+
+export const ActiveAlbum: FC<FetchParams> = ({ id }) => {
   const dispatch = useAppDispatch();
-  const { activeAlbum, currentAlbum } = useAppSelector((state) => state.albums);
+  const photos = useAppSelector((state) => selectPhotosById(state, id!));
+  const sliderRef = createRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    axios
-      .get(`https://jsonplaceholder.typicode.com/albums/${activeAlbum}/photos`)
-      .then((res) => dispatch(setCurrentAlbum(res.data)));
-  }, [activeAlbum]);
-
+    dispatch(fetchPhotos({ id }));
+  }, []);
+  const prevHandler = () => {
+    sliderRef.childNodes;
+  };
+  const nextHandler = () => {};
   return (
     <>
       <Flex color="#90a0b7" justifyContent="space-between" mb="10px">
@@ -29,7 +34,7 @@ export const ActiveAlbum: FC = () => {
           color="#90a0b7">
           Active Album
         </Heading>
-        <CloseButton onClick={() => dispatch(setActiveAlbum(0))} />
+        <CloseButton onClick={() => dispatch(setActiveAlbum('0'))} />
       </Flex>
       <Box
         transition="all easy 1s"
@@ -40,7 +45,6 @@ export const ActiveAlbum: FC = () => {
         maxHeight="400px"
         color="white"
         mb="50px"
-        overflow="hidden"
         p="10px"
         bgColor="rgb(0 0 0 / 6%)">
         <Flex
@@ -54,9 +58,20 @@ export const ActiveAlbum: FC = () => {
             colorScheme="teal"
             bgColor="rgb(0 0 0 / 6%)"
             as={ChevronLeftIcon}
+            onClick={prevHandler}
             color="black"
             aria-label="prev"
           />
+          <Flex
+            flexDirection="row"
+            onClick={nextHandler}
+            ref={sliderRef}
+            color="grey"
+            w="240px"
+            h="320px"
+            overflow="hidden">
+            {photos ? photos.map((photo) => <Photo key={photo!.id} {...photo!} />) : ''}
+          </Flex>
 
           <IconButton
             colorScheme="teal"

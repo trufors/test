@@ -1,26 +1,12 @@
 import { CloseIcon } from '@chakra-ui/icons';
-import {
-  Button,
-  Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Heading,
-  Icon,
-  Input,
-  Stack,
-} from '@chakra-ui/react';
+import { Button, Flex, FormControl, FormHelperText, FormLabel } from '@chakra-ui/react';
+import { Heading, Icon, Input, Stack } from '@chakra-ui/react';
 import { ChangeEvent, FC, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import {
-  editPostBody,
-  editPostTitle,
-  fetchCreatePost,
-  fetchUpdatePost,
-  selectPostForm,
-  setPostForm,
-} from '../../store/slices/posts';
+import { fetchCreatePost, fetchUpdatePost } from '../../store/slices/posts/asyncThunkPosts';
+import { selectPostForm } from '../../store/slices/posts/selectors';
+import { editPostBody, editPostTitle, setPostForm } from '../../store/slices/posts/slice';
 
 export const PostFormPage: FC = () => {
   const { postId } = useParams();

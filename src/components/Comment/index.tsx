@@ -1,10 +1,9 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { Collapse, Icon, Text, Box, useDisclosure } from '@chakra-ui/react';
 import { FC } from 'react';
-import { CommentsState } from '../../store/slices/comments';
-import { CommentForm } from '../../pages/PostsPage/CommentForm';
+import { CommentType } from '../../types';
 
-export const Comment: FC<CommentsState> = ({ email, name, body, id, postId }) => {
+export const Comment: FC<CommentType> = ({ email, name, body, id, postId }) => {
   const { isOpen, onToggle } = useDisclosure();
 
   return (

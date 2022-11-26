@@ -15,10 +15,12 @@ import {
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../hooks';
-import { fetchDeletePost, PostsState } from '../../store/slices/posts';
+import { fetchDeletePost } from '../../store/slices/posts/asyncThunkPosts';
+import { PostType } from '../../types';
+
 import { Comments } from '../Comments';
 
-export const Post: FC<PostsState> = ({ title, id, body }) => {
+export const Post: FC<PostType> = ({ title, id, body }) => {
   const { isOpen, onToggle } = useDisclosure();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -28,7 +30,7 @@ export const Post: FC<PostsState> = ({ title, id, body }) => {
         <Heading size="md">{title}</Heading>
         <ButtonGroup>
           <Button onClick={() => navigate(`${id}/edit`)}>Edit</Button>
-          <Button onClick={() => dispatch(fetchDeletePost(id))}>Delete</Button>
+          <Button onClick={() => dispatch(fetchDeletePost({ id: id.toString() }))}>Delete</Button>
         </ButtonGroup>
       </CardHeader>
 
@@ -51,7 +53,7 @@ export const Post: FC<PostsState> = ({ title, id, body }) => {
         </Box>
 
         <Collapse in={isOpen} animateOpacity>
-          {isOpen && <Comments id={id} />}
+          {isOpen && <Comments id={id.toString()} />}
         </Collapse>
       </CardBody>
     </Card>

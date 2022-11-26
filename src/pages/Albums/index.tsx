@@ -1,16 +1,13 @@
-import { Box, Flex, Grid, GridItem, Heading } from '@chakra-ui/react';
+import { Flex, Grid, Heading } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 import { FC, useEffect, useState } from 'react';
-import axios from 'axios';
+
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchAlbums, selectAlbums } from '../../store/slices/albums';
-import { Album } from './Album';
-import { CloseButton } from '@chakra-ui/react';
+import { fetchAlbums } from '../../store/slices/albums/asyncThunkAlbums';
+import { selectAlbums } from '../../store/slices/albums/selectors';
 import { ActiveAlbum } from './ActiveAlbum';
 
-type Fetch = {
-  data: any;
-};
+import { Album } from './Album';
 
 const GridScrollContainer = styled(Grid)`
   &::-webkit-scrollbar {
@@ -20,7 +17,8 @@ const GridScrollContainer = styled(Grid)`
 
 export const Albums: FC = () => {
   const dispatch = useAppDispatch();
-  const { entities, ids } = useAppSelector(selectAlbums);
+  const { entities, ids, activeAlbumId } = useAppSelector(selectAlbums);
+  
 
   useEffect(() => {
     dispatch(fetchAlbums());
@@ -32,7 +30,7 @@ export const Albums: FC = () => {
         Albums
       </Heading>
 
-      {/* {activeAlbum ? <ActiveAlbum /> : ''} */}
+      {activeAlbumId ? <ActiveAlbum id={activeAlbumId} /> : ''}
       <Flex color="#90a0b7" justifyContent="space-between" mb="10px">
         <Heading
           as="h3"

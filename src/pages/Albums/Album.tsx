@@ -3,19 +3,28 @@ import styled from '@emotion/styled';
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { AlbumType } from '../../store/slices/albums';
+import { fetchDeleteAlbum } from '../../store/slices/albums/asyncThunkAlbums';
+import { setActiveAlbum } from '../../store/slices/albums/slice';
+import { AlbumType } from '../../types';
 
 export const Album: FC<AlbumType> = ({ userId, title, id }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   return (
     <>
-      <GridItem boxShadow="xl" rounded="md" bg="white" w="100%" h="300" p="20px">
+      <GridItem
+        onClick={() => dispatch(setActiveAlbum(`${id}`))}
+        boxShadow="xl"
+        rounded="md"
+        bg="white"
+        w="100%"
+        h="300"
+        p="20px">
         <ButtonGroup>
           <Button onClick={() => navigate(`${id}/edit`)}>Edit</Button>
-          <Button>Delete</Button>
+          <Button onClick={() => dispatch(fetchDeleteAlbum({ id: id.toString() }))}>Delete</Button>
         </ButtonGroup>
-        <Box h="100%" w="100%" bg="white" textAlign="center" m="auto 0">
+        <Box bg="white" textAlign="center" m="auto">
           {title}
         </Box>
       </GridItem>

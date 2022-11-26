@@ -1,26 +1,16 @@
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Grid,
-  GridItem,
-  Heading,
-  Input,
-} from '@chakra-ui/react';
+import { Button, Flex, Grid, Heading, Input } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import { FC, useEffect, useState } from 'react';
-import axios from 'axios';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchAlbums, selectAlbumById, selectAlbums } from '../../store/slices/albums';
-
-import { CloseButton } from '@chakra-ui/react';
-import { Album } from '../Albums/Album';
-import { Photo } from './Photo';
-import { fetchPhotos, selectPhotos } from '../../store/slices/photos';
+import { ChangeEvent, FC, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+
+import { useAppDispatch, useAppSelector } from '../../hooks';
+
+import { selectPhotosById } from '../../store/slices/photos/selectors';
+import { setEditInput } from '../../store/slices/albums/slice';
+import { selectAlbumById, selectAlbumsInputValue } from '../../store/slices/albums/selectors';
+import { fetchPhotos } from '../../store/slices/photos/asyncThunkPhotos';
+import { fetchUpdateAlbum } from '../../store/slices/albums/asyncThunkAlbums';
+import { Photo } from '../../components/Photo';
 
 const GridScrollContainer = styled(Grid)`
   &::-webkit-scrollbar {
@@ -31,11 +21,27 @@ const GridScrollContainer = styled(Grid)`
 export const EditAlbumPage: FC = () => {
   const { albumId } = useParams();
   const dispatch = useAppDispatch();
-  const { entities, ids } = useAppSelector(selectPhotos);
+
+  const photos = useAppSelector((state) => selectPhotosById(state, albumId!));
+  const currentAlbum = useAppSelector((state) => selectAlbumById(state, albumId!));
+  const value = useAppSelector(selectAlbumsInputValue);
 
   useEffect(() => {
-    dispatch(fetchPhotos(albumId!));
+    dispatch(fetchPhotos({ id: albumId! }));
+    dispatch(setEditInput(currentAlbum!.title));
+    return () => {
+      dispatch(setEditInput(''));
+    };
   }, []);
+
+  const handlerInput = (e: ChangeEvent) => {
+    const target = e.target as HTMLInputElement;
+    dispatch(setEditInput(target.value));
+  };
+
+  const saveChanges = () => {
+    dispatch(fetchUpdateAlbum({ id: albumId! }));
+  };
 
   return (
     <>
@@ -46,10 +52,11 @@ export const EditAlbumPage: FC = () => {
         <Heading as="h3" fontWeight="600" fontSize="16px" lineHeight="24px" color="#90a0b7">
           Edit Album
         </Heading>
-        <Button border="1px solid lightgrey" bgColor="white">
+        <Button onClick={saveChanges} border="1px solid lightgrey" bgColor="white">
           Save
         </Button>
       </Flex>
+      <Input value={value} onChange={handlerInput} placeholder="write your title" />
       <GridScrollContainer
         overflow="scroll"
         templateColumns="repeat(4, 1fr)"
@@ -59,7 +66,7 @@ export const EditAlbumPage: FC = () => {
         boxShadow="xl"
         rounded="md"
         p="20px 25px">
-        {ids && ids.map((id) => <Photo key={id} {...entities[id]!} />)}
+        {photos && photos.map((photo) => <Photo key={photo!.id} {...photo!} />)}
       </GridScrollContainer>
     </>
   );

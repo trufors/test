@@ -1,16 +1,9 @@
-import { createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { RootState } from '../../index';
-import { HttpService } from '../../../api';
-import { LoadingStatuses } from '../../../types';
-import { fetchAlbums } from './thunk';
+import { fetchAlbums, fetchDeleteAlbum, fetchUpdateAlbum } from './asyncThunkAlbums';
 
-export type AlbumType = {
-  userId: string;
-  id: number;
-  title: string;
-};
+import { LoadingStatuses } from '../../constants';
+import { AlbumType } from '../../../types';
 
 const albumsEntityAdapter = createEntityAdapter<AlbumType>({
   sortComparer: (a, b) => b.id - a.id,
@@ -18,23 +11,51 @@ const albumsEntityAdapter = createEntityAdapter<AlbumType>({
 
 export const albumsSlice = createSlice({
   name: 'albums',
-  initialState: albumsEntityAdapter.getInitialState({ status: '' }),
-  reducers: {},
+  initialState: albumsEntityAdapter.getInitialState({
+    status: '',
+    inputValue: '',
+    activeAlbumId: '',
+  }),
+  reducers: {
+    setEditInput: (state, { payload }: PayloadAction<string>) => {
+      state.inputValue = payload;
+    },
+    setActiveAlbum: (state, { payload }: PayloadAction<string>) => {
+      state.activeAlbumId = payload;
+    },
+  },
   extraReducers: (builder) => {
-    builder.addCase(fetchAlbums.pending, (state) => {
-      state.status = LoadingStatuses.LOADING;
-    });
-    builder.addCase(fetchAlbums.fulfilled, (state, { payload }) => {
-      state.status = LoadingStatuses.SUCCESS;
-      albumsEntityAdapter.addMany(state, payload);
-    });
-    builder.addCase(fetchAlbums.rejected, (state, { payload }) => {
-      state.status =
-        payload === LoadingStatuses.EARLYADDED ? LoadingStatuses.EARLYADDED : LoadingStatuses.ERROR;
-    });
+    builder
+      .addCase(fetchAlbums.pending, (state) => {
+        state.status = LoadingStatuses.LOADING;
+      })
+      .addCase(fetchAlbums.fulfilled, (state, { payload }) => {
+        state.status = LoadingStatuses.SUCCESS;
+        albumsEntityAdapter.addMany(state, payload);
+      })
+      .addCase(fetchAlbums.rejected, (state, { payload }) => {
+        state.status =
+          payload === LoadingStatuses.EARLYADDED
+            ? LoadingStatuses.EARLYADDED
+            : LoadingStatuses.ERROR;
+      })
+      .addCase(fetchDeleteAlbum.fulfilled, (state, { payload }) => {
+        state.status = LoadingStatuses.SUCCESS;
+        albumsEntityAdapter.removeOne(state, payload);
+      })
+      .addCase(fetchDeleteAlbum.rejected, (state) => {
+        state.status = LoadingStatuses.ERROR;
+      })
+      .addCase(fetchUpdateAlbum.fulfilled, (state, { payload }) => {
+        state.status = LoadingStatuses.SUCCESS;
+        albumsEntityAdapter.updateOne(state, { id: payload.id, changes: payload });
+      })
+      .addCase(fetchUpdateAlbum.rejected, (state) => {
+        state.status = LoadingStatuses.ERROR;
+      });
   },
 });
 
-export const {} = albumsSlice.actions;
+export const { setActiveAlbum, setEditInput } = albumsSlice.actions;
 
 export default albumsSlice.reducer;

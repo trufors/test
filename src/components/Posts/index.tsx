@@ -2,7 +2,7 @@ import { Flex } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 import { FC } from 'react';
 import { useAppSelector } from '../../hooks';
-import { selectPosts } from '../../store/slices/posts';
+import { selectPosts } from '../../store/slices/posts/selectors';
 
 import { Post } from '../Post';
 
@@ -25,7 +25,7 @@ export const Posts: FC = () => {
         flexDirection="column"
         p="20px 25px">
         {ids.map((id) => (
-          <Post {...entities[id]!} />
+          <Post key={id} {...entities[id]!} />
         ))}
       </FlexScrollContainer>
     </>

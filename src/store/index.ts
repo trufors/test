@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import albums from './slices/albums/slice';
 
-import { albumsSlice } from './slices/albums';
-import comments from './slices/comments';
-import photos from './slices/photos';
-import posts from './slices/posts';
+import albums from './slices/albums/slice';
+import comments from './slices/comments/slice';
+import photos from './slices/photos/slice';
+import posts from './slices/posts/slice';
+
 import sidebar from './slices/sidebar';
 import todos from './slices/todos';
 

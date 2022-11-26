@@ -2,9 +2,10 @@ import { CloseIcon, DeleteIcon } from '@chakra-ui/icons';
 import { Box, Button, ButtonGroup, Flex, GridItem, IconButton, Img, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 import { useAppDispatch } from '../../hooks';
-import { fetchDeletePhotos, PhotoType } from '../../store/slices/photos';
+import { fetchDeletePhoto } from '../../store/slices/photos/asyncThunkPhotos';
+import { PhotoType } from '../../types';
 
-export const Photo: FC<PhotoType> = ({ url, title, id, albumId }) => {
+export const Photo: FC<PhotoType> = ({ url, title, id }) => {
   const dispatch = useAppDispatch();
 
   return (
@@ -27,7 +28,7 @@ export const Photo: FC<PhotoType> = ({ url, title, id, albumId }) => {
         </Text>
         <IconButton
           onClick={() => {
-            dispatch(fetchDeletePhotos(id));
+            dispatch(fetchDeletePhoto({ id: id.toString() }));
           }}
           aria-label="delete photo"
           size="xl"

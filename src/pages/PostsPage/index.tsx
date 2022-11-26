@@ -1,10 +1,11 @@
-import { Flex, Heading, Box, Text, Button } from '@chakra-ui/react';
+import { Flex, Heading, Button } from '@chakra-ui/react';
 import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch } from '../../hooks';
-import { fetchPosts } from '../../store/slices/posts';
+
 import { Posts } from '../../components';
+import { fetchPosts } from '../../store/slices/posts/asyncThunkPosts';
 
 export const PostsPage: FC = () => {
   const dispatch = useAppDispatch();
