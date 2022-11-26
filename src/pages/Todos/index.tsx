@@ -1,16 +1,10 @@
-import { CloseIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { Box, Checkbox, Flex, Heading, IconButton, Input, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, Input } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import { FC, useState, KeyboardEvent, useEffect } from 'react';
+import { FC, useEffect } from 'react';
+import { TodoBoard } from '../../components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import {
-  fetchCreateTodo,
-  fetchDeleteTodo,
-  fetchTodos,
-  fetchUpdateTodo,
-  selectTodosData,
-  TodoElement,
-} from '../../store/slices/todos';
+import { fetchTodos } from '../../store/slices/todos/asyncThunkTodos';
+import { selectTodosCompleted, selectTodosNonCompleted } from '../../store/slices/todos/selectors';
 import { Todo } from './Todo';
 
 const ScrollContainer = styled(Box)`
@@ -21,24 +15,12 @@ const ScrollContainer = styled(Box)`
 
 export const Todos: FC = () => {
   const dispatch = useAppDispatch();
-  const { entities, ids } = useAppSelector(selectTodosData);
+  const completedTodos = useAppSelector(selectTodosCompleted);
+  const inProgressTodos = useAppSelector(selectTodosNonCompleted);
 
   useEffect(() => {
     dispatch(fetchTodos());
   }, []);
-  const keyDown = (e: KeyboardEvent) => {
-    if (e.code === 'Enter') {
-      const { value } = e.target as HTMLInputElement;
-      const id = Object.values(entities).length + 1;
-      const todo: TodoElement = {
-        id,
-        userId: 1,
-        title: value,
-        completed: false,
-      };
-      dispatch(fetchCreateTodo(todo));
-    }
-  };
 
   return (
     <>
@@ -62,8 +44,7 @@ export const Todos: FC = () => {
         placeholder="Insert your todos"
         boxShadow="xl"
         rounded="md"
-        mb="20px"
-        onKeyDown={(e) => keyDown(e)}></Input>
+        mb="20px"></Input>
       <Flex color="#90a0b7" justifyContent="space-between" mb="10px">
         <Heading
           as="h3"
@@ -75,33 +56,14 @@ export const Todos: FC = () => {
           Yours todos
         </Heading>
       </Flex>
-      <Flex h="78%" boxShadow="xl" rounded="md" p="20px 25px" justifyContent="space-evenly">
-        <ScrollContainer
-          h="700px"
-          w="500px"
-          bgColor="white"
-          overflow="scroll"
-          boxShadow="xl"
-          rounded="md"
-          p="20px 25px">
-          {ids.length &&
-            ids
-              .filter((id) => entities[id]!.completed === false)
-              .map((id) => <Todo key={id} todo={entities[id]!} />)}
-        </ScrollContainer>
-        <ScrollContainer
-          w="500px"
-          h="700px"
-          bgColor="white"
-          overflow="scroll"
-          boxShadow="xl"
-          rounded="md"
-          p="20px 25px">
-          {ids.length &&
-            ids
-              .filter((id) => entities[id]!.completed === true)
-              .map((id) => <Todo key={id} todo={entities[id]!} />)}
-        </ScrollContainer>
+      <Flex
+        border="1px solid lightgrey"
+        h="78%"
+        boxShadow="xl"
+        rounded="md"
+        p="20px 25px"
+        justifyContent="space-evenly">
+        <TodoBoard />
       </Flex>
     </>
   );

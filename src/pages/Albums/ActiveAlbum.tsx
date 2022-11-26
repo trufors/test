@@ -1,27 +1,49 @@
-import { createRef, FC, RefObject, useEffect, useRef } from 'react';
+import { createRef, FC, RefObject, useEffect, useRef, useState } from 'react';
 import { Box, CloseButton, Flex, Heading } from '@chakra-ui/react';
 import { IconButton } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { FetchParams } from '../../types';
+import { IdParams } from '../../types';
 import { selectPhotosById } from '../../store/slices/photos/selectors';
 import { fetchPhotos } from '../../store/slices/photos/asyncThunkPhotos';
 import { Photo } from '../../components/Photo';
 import { setActiveAlbum } from '../../store/slices/albums/slice';
 
-export const ActiveAlbum: FC<FetchParams> = ({ id }) => {
+type ActiveAlbum = {
+  id: number;
+};
+
+export const ActiveAlbum: FC<ActiveAlbum> = ({ id }) => {
+  const [offset, setOffset] = useState(0);
   const dispatch = useAppDispatch();
-  const photos = useAppSelector((state) => selectPhotosById(state, id!));
-  const sliderRef = createRef<HTMLDivElement>(null);
+  const photos = useAppSelector((state) => selectPhotosById(state, id!.toString()));
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    dispatch(fetchPhotos({ id }));
+    dispatch(fetchPhotos({ id: id.toString() }));
   }, []);
+
   const prevHandler = () => {
-    sliderRef.childNodes;
+    console.log(sliderRef.current);
+    setOffset(offset + 240);
+    sliderRef.current!.childNodes.forEach((element) => {
+      if (element === sliderRef.current!.firstChild) {
+        return;
+      }
+      element.style = `transform: translateX(${offset}px)`;
+    });
   };
-  const nextHandler = () => {};
+  const nextHandler = () => {
+    console.log(sliderRef.current);
+    setOffset(offset - 240);
+    sliderRef.current!.childNodes.forEach((element) => {
+      if (element === sliderRef.current!.lastChild) {
+        return;
+      }
+      element.style = `transform: translateX(${offset}px)`;
+    });
+  };
   return (
     <>
       <Flex color="#90a0b7" justifyContent="space-between" mb="10px">
@@ -34,7 +56,7 @@ export const ActiveAlbum: FC<FetchParams> = ({ id }) => {
           color="#90a0b7">
           Active Album
         </Heading>
-        <CloseButton onClick={() => dispatch(setActiveAlbum('0'))} />
+        <CloseButton onClick={() => dispatch(setActiveAlbum(0))} />
       </Flex>
       <Box
         transition="all easy 1s"
@@ -62,18 +84,22 @@ export const ActiveAlbum: FC<FetchParams> = ({ id }) => {
             color="black"
             aria-label="prev"
           />
-          <Flex
-            flexDirection="row"
-            onClick={nextHandler}
-            ref={sliderRef}
-            color="grey"
-            w="240px"
-            h="320px"
-            overflow="hidden">
-            {photos ? photos.map((photo) => <Photo key={photo!.id} {...photo!} />) : ''}
-          </Flex>
+          <Box overflow="hidden">
+            <Flex
+              left="0"
+              transition="all 1s"
+              transform={`translateX(${offset}px)`}
+              flexDirection="row"
+              color="grey"
+              w="240px"
+              h="320px"
+              overflow="hidden">
+              {photos ? photos.map((photo) => <Photo key={photo!.id} {...photo!} />) : ''}
+            </Flex>
+          </Box>
 
           <IconButton
+            onClick={nextHandler}
             colorScheme="teal"
             bgColor="rgb(0 0 0 / 6%)"
             as={ChevronRightIcon}

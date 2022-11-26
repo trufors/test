@@ -1,9 +1,8 @@
 import { CloseIcon, EditIcon } from '@chakra-ui/icons';
-import { Box, Checkbox, IconButton, Input, Text } from '@chakra-ui/react';
-import { FC, DragEvent, SetStateAction, Dispatch, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { Box, Checkbox, IconButton, Text } from '@chakra-ui/react';
+import { FC } from 'react';
+import { useAppDispatch } from '../../hooks';
 import { fetchDeleteTodo } from '../../store/slices/todos/asyncThunkTodos';
-
 import { TodoType } from '../../types';
 
 export const Todo: FC<TodoType> = ({ completed, id, title }) => {
@@ -25,7 +24,6 @@ export const Todo: FC<TodoType> = ({ completed, id, title }) => {
       <Checkbox isChecked={completed} colorScheme="green" mr="auto" />
       <Text m="0 auto">{title}</Text>
       <Box ml="auto">
-        <IconButton size="xl" cursor="pointer" as={EditIcon} aria-label="edit todos" mr="10px" />
         <IconButton
           size="xl"
           cursor="pointer"

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../..';
 import { HttpService } from '../../../api';
-import { FetchParams, PostType } from '../../../types';
+import { IdParams, PostType } from '../../../types';
 import { LoadingStatuses } from '../../constants';
 import { selectPostsIds } from './selectors';
 
@@ -14,7 +14,7 @@ export const fetchPosts = createAsyncThunk<PostType[]>('posts/fetchPosts', async
   return data;
 });
 
-export const fetchDeletePost = createAsyncThunk<number, FetchParams>(
+export const fetchDeletePost = createAsyncThunk<number, IdParams>(
   'posts/fetchDeletePost',
   async ({ id }, thunkAPI) => {
     await HttpService.delete(`/posts/${id}`);

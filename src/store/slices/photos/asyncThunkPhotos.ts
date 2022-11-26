@@ -1,11 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../..';
 import { HttpService } from '../../../api';
-import { FetchParams, PhotoType } from '../../../types';
+import { IdParams, PhotoType } from '../../../types';
 import { LoadingStatuses } from '../../constants';
 import { selectPhotosById } from './selectors';
 
-export const fetchPhotos = createAsyncThunk<PhotoType[], FetchParams>(
+export const fetchPhotos = createAsyncThunk<PhotoType[], IdParams>(
   'photos/fetchPhotos',
   async ({ id }, thunkAPI) => {
     console.log(id);
@@ -18,7 +18,7 @@ export const fetchPhotos = createAsyncThunk<PhotoType[], FetchParams>(
   },
 );
 
-export const fetchDeletePhoto = createAsyncThunk<number, FetchParams>(
+export const fetchDeletePhoto = createAsyncThunk<number, IdParams>(
   'photos/fetchDeletePhotos',
   async ({ id }, thunkAPI) => {
     await HttpService.delete(`/photos/${id}`);

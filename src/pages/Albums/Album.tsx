@@ -13,7 +13,7 @@ export const Album: FC<AlbumType> = ({ userId, title, id }) => {
   return (
     <>
       <GridItem
-        onClick={() => dispatch(setActiveAlbum(`${id}`))}
+        onClick={() => dispatch(setActiveAlbum(id))}
         boxShadow="xl"
         rounded="md"
         bg="white"

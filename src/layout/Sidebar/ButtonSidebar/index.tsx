@@ -2,7 +2,7 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Button, Icon, IconButton } from '@chakra-ui/react';
 import { FC } from 'react';
 import { useAppDispatch } from '../../../hooks';
-import { setIsOpen } from '../../../store/slices/sidebar';
+import { setIsOpen } from '../../../store/slices/sidebar/sidebar';
 
 type Props = {
   isOpen: boolean;

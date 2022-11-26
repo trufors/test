@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../..';
 import { HttpService } from '../../../api';
-import { AlbumType, FetchParams } from '../../../types';
+import { AlbumType, IdParams } from '../../../types';
 import { LoadingStatuses } from '../../constants';
 
 import { selectAlbumById, selectAlbumsIds, selectAlbumsInputValue } from './selectors';
@@ -18,7 +18,7 @@ export const fetchAlbums = createAsyncThunk<AlbumType[]>(
     return data;
   },
 );
-export const fetchDeleteAlbum = createAsyncThunk<number, FetchParams>(
+export const fetchDeleteAlbum = createAsyncThunk<number, IdParams>(
   'albums/fetchDeleteAlbum',
   async ({ id }, thunkAPI) => {
     await HttpService.delete(`/albums/${id}`);
@@ -26,7 +26,7 @@ export const fetchDeleteAlbum = createAsyncThunk<number, FetchParams>(
   },
 );
 
-export const fetchUpdateAlbum = createAsyncThunk<AlbumType, FetchParams>(
+export const fetchUpdateAlbum = createAsyncThunk<AlbumType, IdParams>(
   'albums/fetchUpdateAlbum',
   async ({ id }, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;

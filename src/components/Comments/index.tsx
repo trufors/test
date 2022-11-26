@@ -3,11 +3,11 @@ import { FC, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchComments } from '../../store/slices/comments/asyncThunkComments';
 import { selectCommentsByPostId } from '../../store/slices/comments/selectors';
-import { FetchParams } from '../../types';
+import { IdParams } from '../../types';
 
 import { Comment } from '../Comment';
 
-export const Comments: FC<FetchParams> = ({ id }) => {
+export const Comments: FC<IdParams> = ({ id }) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {

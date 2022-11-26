@@ -18,7 +18,6 @@ const GridScrollContainer = styled(Grid)`
 export const Albums: FC = () => {
   const dispatch = useAppDispatch();
   const { entities, ids, activeAlbumId } = useAppSelector(selectAlbums);
-  
 
   useEffect(() => {
     dispatch(fetchAlbums());
@@ -30,7 +29,7 @@ export const Albums: FC = () => {
         Albums
       </Heading>
 
-      {activeAlbumId ? <ActiveAlbum id={activeAlbumId} /> : ''}
+      {activeAlbumId && <ActiveAlbum id={activeAlbumId} />}
       <Flex color="#90a0b7" justifyContent="space-between" mb="10px">
         <Heading
           as="h3"

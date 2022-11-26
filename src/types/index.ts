@@ -4,7 +4,7 @@ export type AlbumType = {
   title: string;
 };
 
-export type FetchParams = { id: string };
+export type IdParams = { id: string };
 
 export type PhotoType = {
   albumId: number;
@@ -27,4 +27,11 @@ export type CommentType = {
   email: string;
   name: string;
   body: string;
+};
+
+export type TodoType = {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
 };
