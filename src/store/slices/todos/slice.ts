@@ -2,7 +2,7 @@ import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import { fetchCreateTodo, fetchDeleteTodo, fetchTodos, fetchUpdateTodo } from './asyncThunkTodos';
-import { TodoType } from '../../../types';
+import { TodoListType, TodoType } from '../../../types';
 import { LoadingStatuses } from '../../constants';
 
 const todosEntityAdapter = createEntityAdapter<TodoType>({
@@ -11,10 +11,37 @@ const todosEntityAdapter = createEntityAdapter<TodoType>({
 
 export const todosSlice = createSlice({
   name: 'todos',
-  initialState: todosEntityAdapter.getInitialState({ status: '' }),
+  initialState: todosEntityAdapter.getInitialState({
+    status: '',
+    todolist: [
+      { id: '1', todos: [] as TodoType[] },
+      { id: '2', todos: [] as TodoType[] },
+    ] as TodoListType[],
+  }),
   reducers: {
-    updateTodos(state, { payload }) {
-      todosEntityAdapter.setAll(state, payload);
+    updateTodosCompleted(state, { payload }: PayloadAction<TodoType[]>) {
+      const completed = state.todolist.find((list) => list.id === '2') as TodoListType;
+      completed.todos = payload;
+    },
+    updateTodosInProgress(state, { payload }: PayloadAction<TodoType[]>) {
+      const completed = state.todolist.find((list) => list.id === '1') as TodoListType;
+      completed.todos = payload;
+    },
+    changeCompletedTodo(state, { payload }: PayloadAction<number>) {
+      const result = state.todolist.find((list) =>
+        list.todos!.find((todo) => todo.id === payload),
+      ) as TodoListType;
+      const todo = result.todos.find((todo) => todo.id === payload) as TodoType;
+      if (result) {
+        todo.completed = !todo.completed;
+      }
+    },
+    setTodosLists(state, { payload }: PayloadAction<TodoListType[]>) {
+      state.todolist = payload;
+    },
+    updateTodosListById(state, { payload }: PayloadAction<TodoListType>) {
+      const list = state.todolist[parseInt(payload.id)];
+      list.todos = payload.todos;
     },
   },
   extraReducers: (builder) => {
@@ -56,6 +83,12 @@ export const todosSlice = createSlice({
   },
 });
 
-export const { updateTodos } = todosSlice.actions;
+export const {
+  changeCompletedTodo,
+  updateTodosListById,
+  updateTodosInProgress,
+  updateTodosCompleted,
+  setTodosLists,
+} = todosSlice.actions;
 
 export default todosSlice.reducer;

@@ -1,63 +1,120 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 
 import { DragDropContext, Draggable, DropResult } from 'react-beautiful-dnd';
-import { StrictModeDroppable } from '../StrictModeDroppable';
 
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
+  selectTodoLists,
   selectTodosCompleted,
-  selectTodosEntities,
-  selectTodosIds,
   selectTodosNonCompleted,
   selectTodosStatus,
 } from '../../store/slices/todos/selectors';
 
 import { fetchUpdateTodo } from '../../store/slices/todos/asyncThunkTodos';
-import { TodoList } from '../TodoList';
+
+import {
+  changeCompletedTodo,
+  setTodosLists,
+  updateTodosCompleted,
+  updateTodosInProgress,
+  updateTodosListById,
+} from '../../store/slices/todos/slice';
+import { TodoListType, TodoType } from '../../types';
+import { StrictModeDroppable } from '../StrictModeDroppable';
+import styled from '@emotion/styled';
+import { Box, Text } from '@chakra-ui/react';
+import { Todo } from '../Todo';
+
+const ScrollContainer = styled(Box)`
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
 
 export const TodoBoard: FC = () => {
   const dispatch = useAppDispatch();
-  const completedTodos = useAppSelector(selectTodosCompleted);
-  const inProgressTodos = useAppSelector(selectTodosNonCompleted);
   const status = useAppSelector(selectTodosStatus);
-  console.log(completedTodos, inProgressTodos);
-  const entities = useAppSelector(selectTodosEntities);
-  const ids = useAppSelector(selectTodosIds);
+  const todolist = useAppSelector(selectTodoLists) as TodoListType[];
+  const completedTodos = useAppSelector(selectTodosCompleted) as TodoType[];
+  const inProgressTodos = useAppSelector(selectTodosNonCompleted) as TodoType[];
+
+  useEffect(() => {
+    dispatch(updateTodosCompleted(completedTodos));
+    dispatch(updateTodosInProgress(inProgressTodos));
+  }, []);
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
     const { source, destination } = result;
 
     if (source.droppableId !== destination.droppableId) {
-      console.log(source.droppableId, destination.droppableId);
-      const sourceColIndex = ids!.findIndex((id) => id === source.droppableId);
+      const sourceColIndex = todolist!.findIndex((list) => list.id === source.droppableId);
+      const destinationColIndex = todolist!.findIndex(
+        (list) => list.id === destination.droppableId,
+      );
 
-      const destinationColIndex = ids!.findIndex((id) => id === destination.droppableId);
-      const sourceCol = parseInt(source.droppableId) ? completedTodos : inProgressTodos;
-      const destinationCol = parseInt(source.droppableId) ? inProgressTodos : completedTodos;
-      console.log(sourceCol, destinationCol);
-      const sourceTask = [...sourceCol];
-      const destinationTask = [...destinationCol];
+      const sourceCol = todolist[sourceColIndex];
+      const destinationCol = todolist[destinationColIndex];
+
+      const sourceTask = [...sourceCol.todos];
+      console.log(sourceTask);
+      const destinationTask = [...destinationCol.todos];
       const [removed] = sourceTask.splice(source.index, 1);
       destinationTask.splice(destination.index, 0, removed);
-      console.log(removed);
-      if (source.droppableId === '0') {
-        console.log(2);
-      }
-      if (destination.droppableId === '0') {
-        console.log(2);
-      }
-      // data[sourceColIndex].tasks = sourceTask;
-      // data[destinationColIndex].tasks = destinationTask;
-      // dispatch(fetchUpdateTodo({ id: removed.id }));
-      // setData(data);
+      console.log(sourceColIndex);
+      console.log(destinationColIndex);
+      dispatch(updateTodosListById({ id: sourceColIndex.toString(), todos: sourceTask }));
+      dispatch(updateTodosListById({ id: destinationColIndex.toString(), todos: destinationTask }));
+
+      dispatch(fetchUpdateTodo({ id: removed.id.toString() }));
+      dispatch(changeCompletedTodo(removed.id));
+      setTodosLists(todolist);
     }
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      {status === 'loading' ? '' : <TodoList todos={inProgressTodos!} id={'0'} />}
-      {status === 'loading' ? '' : <TodoList todos={completedTodos!} id={'1'} />}
+      {todolist.map((list) => (
+        <StrictModeDroppable key={list.id} droppableId={list.id}>
+          {(provided) => (
+            <>
+              <Text>{list.id === '1' ? 'Active' : 'Completed'}</Text>
+              <ScrollContainer
+                h="700px"
+                w="500px"
+                bgColor="white"
+                overflow="scroll"
+                boxShadow="xl"
+                rounded="md"
+                p="20px 25px"
+                {...provided.droppableProps}
+                ref={provided.innerRef}>
+                {list.todos.map((todo, index) => (
+                  <Draggable
+                    key={todo.id.toString()}
+                    draggableId={todo.id.toString()}
+                    index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={{
+                          ...provided.draggableProps.style,
+                          opacity: snapshot.isDragging ? '0.5' : '1',
+                          marginBottom: '10px',
+                        }}>
+                        <Todo {...todo} />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </ScrollContainer>
+            </>
+          )}
+        </StrictModeDroppable>
+      ))}
     </DragDropContext>
   );
 };

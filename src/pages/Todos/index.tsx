@@ -5,6 +5,8 @@ import { TodoBoard } from '../../components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchTodos } from '../../store/slices/todos/asyncThunkTodos';
 import { selectTodosCompleted, selectTodosNonCompleted } from '../../store/slices/todos/selectors';
+import { updateTodosCompleted, updateTodosInProgress } from '../../store/slices/todos/slice';
+import { TodoType } from '../../types';
 import { Todo } from './Todo';
 
 const ScrollContainer = styled(Box)`
@@ -15,8 +17,6 @@ const ScrollContainer = styled(Box)`
 
 export const Todos: FC = () => {
   const dispatch = useAppDispatch();
-  const completedTodos = useAppSelector(selectTodosCompleted);
-  const inProgressTodos = useAppSelector(selectTodosNonCompleted);
 
   useEffect(() => {
     dispatch(fetchTodos());

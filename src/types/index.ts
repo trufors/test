@@ -1,3 +1,5 @@
+import { Obj } from '@popperjs/core';
+
 export type AlbumType = {
   userId: string;
   id: number;
@@ -34,4 +36,9 @@ export type TodoType = {
   id: number;
   title: string;
   completed: boolean;
+};
+
+export type TodoListType = {
+  id: string;
+  todos: TodoType[];
 };

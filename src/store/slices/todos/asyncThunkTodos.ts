@@ -34,10 +34,10 @@ export const fetchUpdateTodo = createAsyncThunk<TodoType, IdParams>(
   'todos/fetchUpdateTodo',
   async ({ id }, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
-    const newTodo = selectTodoById(state, id);
+    const newTodo = selectTodoById(state, id) as TodoType;
     newTodo!.completed = !newTodo!.completed;
     const response = await HttpService.put(`/todos/${newTodo!.id}`, newTodo);
     console.log(response);
-    return newTodo!;
+    return newTodo;
   },
 );
