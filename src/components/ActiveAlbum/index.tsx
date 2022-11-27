@@ -19,6 +19,7 @@ type ActiveAlbum = {
 
 export const ActiveAlbum: FC<ActiveAlbum> = ({ id }) => {
   const [offset, setOffset] = useState(0);
+  const [offsetWidth, setOffsetWidth] = useState(0);
   const dispatch = useAppDispatch();
   const currentAlbum = useAppSelector((state) =>
     selectAlbumById(state, id!.toString()),
@@ -29,23 +30,21 @@ export const ActiveAlbum: FC<ActiveAlbum> = ({ id }) => {
 
   useEffect(() => {
     dispatch(fetchPhotos({ id: id.toString() }));
+    setOffsetWidth((photos.length - 1) * 240);
   }, [id]);
 
   const prevHandler = () => {
-    const container = sliderRef.current as HTMLDivElement;
-    container.childNodes.forEach((element) => {
-      if (element === sliderRef.current!.firstChild) {
-        return;
+    sliderRef.current!.childNodes.forEach((element) => {
+      if (Math.abs(offset) !== 0) {
+        setOffset(offset + 240);
       }
-      setOffset(offset + 240);
     });
   };
   const nextHandler = () => {
     sliderRef.current!.childNodes.forEach((element) => {
-      if (element === sliderRef.current!.lastChild) {
-        return;
+      if (Math.abs(offset) !== offsetWidth) {
+        setOffset(offset - 240);
       }
-      setOffset(offset - 240);
     });
   };
   return (
@@ -64,16 +63,14 @@ export const ActiveAlbum: FC<ActiveAlbum> = ({ id }) => {
             color="black"
             aria-label="prev"
           />
-          <Box overflow="hidden" position="relative" border="none">
+          <Box overflow="hidden" position="relative" border="none" w="240px" h="320px">
             <Flex
               ref={sliderRef}
               transition="all 1s"
               transitionProperty="transform"
               transform={`translateX(${offset}px)`}
               flexDirection="row"
-              color="grey"
-              w="240px"
-              h="320px">
+              color="grey">
               {status === 'loading' ? (
                 <PhotoSkeleton />
               ) : (

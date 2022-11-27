@@ -6,7 +6,11 @@
 
 ### Стек:
 
-React,Redux,Chakra UI, typescript, emotion-styled, vitest
+React,Redux,Chakra UI, typescript, emotion-styled, vitest, react-beautiful-dnd
+
+### Versel
+
+https://soft-project-trufors.vercel.app/
 
 ### To run all tests
 
@@ -20,6 +24,8 @@ React,Redux,Chakra UI, typescript, emotion-styled, vitest
 ### Альбомы
 
 релизован CRUD+ slider
+
+### Посты
 
 ### Todos
 
