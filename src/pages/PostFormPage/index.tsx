@@ -20,14 +20,14 @@ export const PostFormPage: FC = () => {
 
   const { title, body } = useAppSelector(selectPostForm);
 
-  const handlerTitleChange = (e: ChangeEvent) => {
-    const target = e.target as HTMLInputElement;
+  const handlerTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const target = e.target;
     dispatch(editPostTitle(target.value));
     console.log(title);
   };
 
-  const handlerBodyChange = (e: ChangeEvent) => {
-    const target = e.target as HTMLInputElement;
+  const handlerBodyChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const target = e.target;
     dispatch(editPostBody(target.value));
     console.log(body);
   };
