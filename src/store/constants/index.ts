@@ -1,4 +1,4 @@
-export enum LoadingStatuses {
+export enum LoadingStatus {
   IDLE = 'idle',
   LOADING = 'loading',
   SUCCESS = 'success',

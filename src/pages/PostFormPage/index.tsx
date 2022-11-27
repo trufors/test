@@ -23,13 +23,11 @@ export const PostFormPage: FC = () => {
   const handlerTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
     dispatch(editPostTitle(target.value));
-    console.log(title);
   };
 
   const handlerBodyChange = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
     dispatch(editPostBody(target.value));
-    console.log(body);
   };
 
   const fetchForm = () => {

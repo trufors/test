@@ -2,14 +2,14 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../..';
 import { HttpService } from '../../../api';
 import { IdParams, TodoType } from '../../../types';
-import { LoadingStatuses } from '../../constants';
+import { LoadingStatus } from '../../constants';
 
 import { selectTodoById, selectTodosIds } from './selectors';
 
 export const fetchTodos = createAsyncThunk<TodoType[]>('todos/fetchTodos', async (_, thunkAPI) => {
   const state = thunkAPI.getState() as RootState;
   if (selectTodosIds(state).length > 0) {
-    return thunkAPI.rejectWithValue(LoadingStatuses.EARLYADDED);
+    return thunkAPI.rejectWithValue(LoadingStatus.EARLYADDED);
   }
   const { data } = await HttpService.get('/users/1/todos');
   return data;

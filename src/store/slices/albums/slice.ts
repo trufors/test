@@ -2,7 +2,7 @@ import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolki
 
 import { fetchAlbums, fetchDeleteAlbum, fetchUpdateAlbum } from './asyncThunkAlbums';
 
-import { LoadingStatuses } from '../../constants';
+import { LoadingStatus } from '../../constants';
 import { AlbumType } from '../../../types';
 
 const albumsEntityAdapter = createEntityAdapter<AlbumType>({
@@ -23,31 +23,29 @@ export const albumsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAlbums.pending, (state) => {
-        state.status = LoadingStatuses.LOADING;
+        state.status = LoadingStatus.LOADING;
       })
       .addCase(fetchAlbums.fulfilled, (state, { payload }) => {
-        state.status = LoadingStatuses.SUCCESS;
+        state.status = LoadingStatus.SUCCESS;
         albumsEntityAdapter.addMany(state, payload);
       })
       .addCase(fetchAlbums.rejected, (state, { payload }) => {
         state.status =
-          payload === LoadingStatuses.EARLYADDED
-            ? LoadingStatuses.EARLYADDED
-            : LoadingStatuses.ERROR;
+          payload === LoadingStatus.EARLYADDED ? LoadingStatus.EARLYADDED : LoadingStatus.ERROR;
       })
       .addCase(fetchDeleteAlbum.fulfilled, (state, { payload }) => {
-        state.status = LoadingStatuses.SUCCESS;
+        state.status = LoadingStatus.SUCCESS;
         albumsEntityAdapter.removeOne(state, payload);
       })
       .addCase(fetchDeleteAlbum.rejected, (state) => {
-        state.status = LoadingStatuses.ERROR;
+        state.status = LoadingStatus.ERROR;
       })
       .addCase(fetchUpdateAlbum.fulfilled, (state, { payload }) => {
-        state.status = LoadingStatuses.SUCCESS;
+        state.status = LoadingStatus.SUCCESS;
         albumsEntityAdapter.updateOne(state, { id: payload.id, changes: payload });
       })
       .addCase(fetchUpdateAlbum.rejected, (state) => {
-        state.status = LoadingStatuses.ERROR;
+        state.status = LoadingStatus.ERROR;
       });
   },
 });

@@ -2,7 +2,7 @@ import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../..';
 import { CommentType } from '../../../types';
-import { LoadingStatuses } from '../../constants';
+import { LoadingStatus } from '../../constants';
 import { fetchComments } from './asyncThunkComments';
 
 const commentsEntityAdapter = createEntityAdapter<CommentType>({
@@ -16,18 +16,16 @@ export const commentsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchComments.pending, (state) => {
-        state.status = LoadingStatuses.LOADING;
+        state.status = LoadingStatus.LOADING;
       })
       .addCase(fetchComments.fulfilled, (state, { payload }) => {
-        state.status = LoadingStatuses.SUCCESS;
+        state.status = LoadingStatus.SUCCESS;
         commentsEntityAdapter.addMany(state, payload);
       })
 
       .addCase(fetchComments.rejected, (state, { payload }) => {
         state.status =
-          payload === LoadingStatuses.EARLYADDED
-            ? LoadingStatuses.EARLYADDED
-            : LoadingStatuses.ERROR;
+          payload === LoadingStatus.EARLYADDED ? LoadingStatus.EARLYADDED : LoadingStatus.ERROR;
       });
   },
 });

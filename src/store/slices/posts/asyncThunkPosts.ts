@@ -2,13 +2,13 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../..';
 import { HttpService } from '../../../api';
 import { IdParams, PostType } from '../../../types';
-import { LoadingStatuses } from '../../constants';
+import { LoadingStatus } from '../../constants';
 import { selectPostsIds } from './selectors';
 
 export const fetchPosts = createAsyncThunk<PostType[]>('posts/fetchPosts', async (_, thunkAPI) => {
   const state = thunkAPI.getState() as RootState;
   if (selectPostsIds(state).length > 0) {
-    return thunkAPI.rejectWithValue(LoadingStatuses.EARLYADDED);
+    return thunkAPI.rejectWithValue(LoadingStatus.EARLYADDED);
   }
   const { data } = await HttpService.get('/users/1/posts');
   return data;

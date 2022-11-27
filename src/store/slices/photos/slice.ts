@@ -2,7 +2,7 @@ import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 
 import { fetchDeletePhoto, fetchPhotos } from './asyncThunkPhotos';
 import { PhotoType } from '../../../types';
-import { LoadingStatuses } from '../../constants';
+import { LoadingStatus } from '../../constants';
 
 const photosEntityAdapter = createEntityAdapter<PhotoType>({
   sortComparer: (a, b) => b.id - a.id,
@@ -15,24 +15,22 @@ export const photosSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchPhotos.pending, (state) => {
-        state.status = LoadingStatuses.LOADING;
+        state.status = LoadingStatus.LOADING;
       })
       .addCase(fetchPhotos.fulfilled, (state, { payload }) => {
-        state.status = LoadingStatuses.SUCCESS;
+        state.status = LoadingStatus.SUCCESS;
         photosEntityAdapter.addMany(state, payload);
       })
       .addCase(fetchPhotos.rejected, (state, { payload }) => {
         state.status =
-          payload === LoadingStatuses.EARLYADDED
-            ? LoadingStatuses.EARLYADDED
-            : LoadingStatuses.ERROR;
+          payload === LoadingStatus.EARLYADDED ? LoadingStatus.EARLYADDED : LoadingStatus.ERROR;
       })
       .addCase(fetchDeletePhoto.fulfilled, (state, { payload }) => {
-        state.status = LoadingStatuses.SUCCESS;
+        state.status = LoadingStatus.SUCCESS;
         photosEntityAdapter.removeOne(state, payload);
       })
       .addCase(fetchDeletePhoto.rejected, (state) => {
-        state.status = LoadingStatuses.ERROR;
+        state.status = LoadingStatus.ERROR;
       });
   },
 });

@@ -19,7 +19,6 @@ export const Comments: FC<IdParams> = ({ id }) => {
   useEffect(() => {
     dispatch(fetchComments({ id }));
   }, []);
-  console.log(status);
 
   return (
     <Box pb={4}>

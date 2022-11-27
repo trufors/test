@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { PostType } from '../../../types';
 import { RootState } from '../..';
 import { fetchCreatePost, fetchDeletePost, fetchPosts, fetchUpdatePost } from './asyncThunkPosts';
-import { LoadingStatuses } from '../../constants';
+import { LoadingStatus } from '../../constants';
 
 const postsEntityAdapter = createEntityAdapter<PostType>({
   sortComparer: (a, b) => b.id - a.id,
@@ -36,39 +36,37 @@ export const postsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchPosts.pending, (state) => {
-        state.status = LoadingStatuses.LOADING;
+        state.status = LoadingStatus.LOADING;
       })
       .addCase(fetchPosts.fulfilled, (state, { payload }) => {
-        state.status = LoadingStatuses.SUCCESS;
+        state.status = LoadingStatus.SUCCESS;
         postsEntityAdapter.addMany(state, payload);
       })
 
       .addCase(fetchPosts.rejected, (state, { payload }) => {
         state.status =
-          payload === LoadingStatuses.EARLYADDED
-            ? LoadingStatuses.EARLYADDED
-            : LoadingStatuses.ERROR;
+          payload === LoadingStatus.EARLYADDED ? LoadingStatus.EARLYADDED : LoadingStatus.ERROR;
       })
       .addCase(fetchDeletePost.fulfilled, (state, { payload }) => {
-        state.status = LoadingStatuses.SUCCESS;
+        state.status = LoadingStatus.SUCCESS;
         postsEntityAdapter.removeOne(state, payload);
       })
       .addCase(fetchDeletePost.rejected, (state) => {
-        state.status = LoadingStatuses.ERROR;
+        state.status = LoadingStatus.ERROR;
       })
       .addCase(fetchUpdatePost.fulfilled, (state, { payload }) => {
-        state.status = LoadingStatuses.SUCCESS;
+        state.status = LoadingStatus.SUCCESS;
         postsEntityAdapter.updateOne(state, { id: payload.id, changes: payload });
       })
       .addCase(fetchUpdatePost.rejected, (state) => {
-        state.status = LoadingStatuses.ERROR;
+        state.status = LoadingStatus.ERROR;
       })
       .addCase(fetchCreatePost.fulfilled, (state, { payload }) => {
-        state.status = LoadingStatuses.SUCCESS;
+        state.status = LoadingStatus.SUCCESS;
         postsEntityAdapter.addOne(state, payload);
       })
       .addCase(fetchCreatePost.rejected, (state) => {
-        state.status = LoadingStatuses.ERROR;
+        state.status = LoadingStatus.ERROR;
       });
   },
 });
