@@ -1,26 +1,39 @@
-import { Box, Flex, Heading, Input } from '@chakra-ui/react';
-import styled from '@emotion/styled';
-import { FC, useEffect } from 'react';
+import { Flex, Heading, Input } from '@chakra-ui/react';
+import { FC, useEffect, useState } from 'react';
+
 import { TodoBoard } from '../../components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchTodos } from '../../store/slices/todos/asyncThunkTodos';
-import { selectTodosCompleted, selectTodosNonCompleted } from '../../store/slices/todos/selectors';
-import { updateTodosCompleted, updateTodosInProgress } from '../../store/slices/todos/slice';
+import { createNewTodo } from '../../store/slices/boards/slice';
+import { fetchCreateTodo, fetchTodos } from '../../store/slices/todos/asyncThunkTodos';
+import { selectTodosIds } from '../../store/slices/todos/selectors';
 import { TodoType } from '../../types';
-import { Todo } from './Todo';
 
-const ScrollContainer = styled(Box)`
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
-export const Todos: FC = () => {
+export const TodosPage: FC = () => {
+  const [inputValue, setInputValue] = useState('');
   const dispatch = useAppDispatch();
+  const ids = useAppSelector(selectTodosIds);
 
   useEffect(() => {
     dispatch(fetchTodos());
   }, []);
+
+  const createTodo = () => {
+    if (inputValue === '') return;
+
+    const todo: TodoType = {
+      userId: 1,
+      id: ids.length + 1,
+      title: inputValue,
+      completed: false,
+    };
+    dispatch(createNewTodo(todo));
+    dispatch(fetchCreateTodo(todo));
+    setInputValue('');
+  };
+
+  const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.code === 'Enter') createTodo();
+  };
 
   return (
     <>
@@ -40,6 +53,9 @@ export const Todos: FC = () => {
         </Heading>
       </Flex>
       <Input
+        onKeyDown={onKeyDown}
+        onChange={(e) => setInputValue(e.target.value)}
+        value={inputValue}
         bgColor="white"
         placeholder="Insert your todos"
         boxShadow="xl"
@@ -53,7 +69,7 @@ export const Todos: FC = () => {
           lineHeight="24px"
           mb="10px"
           color="#90a0b7">
-          Yours todos
+          Boards
         </Heading>
       </Flex>
       <Flex

@@ -7,6 +7,7 @@ import posts from './slices/posts/slice';
 import todos from './slices/todos/slice';
 
 import sidebar from './slices/sidebar/sidebar';
+import boards from './slices/boards/slice';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     posts,
     comments,
     photos,
+    boards,
   },
 });
 

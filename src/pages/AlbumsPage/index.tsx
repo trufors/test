@@ -5,9 +5,9 @@ import { FC, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchAlbums } from '../../store/slices/albums/asyncThunkAlbums';
 import { selectAlbums } from '../../store/slices/albums/selectors';
-import { ActiveAlbum } from './ActiveAlbum';
+import { ActiveAlbum } from '../../components/ActiveAlbum';
 
-import { Album } from './Album';
+import { Album } from '../../components/Album';
 
 const GridScrollContainer = styled(Grid)`
   &::-webkit-scrollbar {

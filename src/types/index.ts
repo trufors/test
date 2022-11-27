@@ -42,3 +42,13 @@ export type TodoListType = {
   id: string;
   todos: TodoType[];
 };
+
+export type BoardsState = {
+  status: string;
+  boards: TodoListType[];
+};
+
+export type CreateTodoParams = {
+  id: number;
+  value: string;
+};

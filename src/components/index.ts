@@ -5,3 +5,5 @@ export * from './Posts';
 export * from './Photo';
 export * from './StrictModeDroppable';
 export * from './TodoBoard';
+export * from './Album';
+export * from './ActiveAlbum';

@@ -1,12 +1,18 @@
-import { CloseIcon, EditIcon } from '@chakra-ui/icons';
-import { Box, Checkbox, IconButton, Text } from '@chakra-ui/react';
+import { CloseIcon, DragHandleIcon, EditIcon, Icon } from '@chakra-ui/icons';
+import { Box, Checkbox, CloseButton, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 import { useAppDispatch } from '../../hooks';
-import { fetchDeleteTodo } from '../../store/slices/todos/asyncThunkTodos';
+import { changeCompletedTodo, deleteBoardTodo } from '../../store/slices/boards/slice';
+import { fetchDeleteTodo, fetchUpdateTodo } from '../../store/slices/todos/asyncThunkTodos';
 import { TodoType } from '../../types';
 
 export const Todo: FC<TodoType> = ({ completed, id, title }) => {
   const dispatch = useAppDispatch();
+
+  const DeleteTodo = () => {
+    dispatch(fetchDeleteTodo({ id: id.toString() }));
+    dispatch(deleteBoardTodo(id));
+  };
 
   return (
     <Box
@@ -17,20 +23,20 @@ export const Todo: FC<TodoType> = ({ completed, id, title }) => {
       mb="20px"
       boxShadow="xl"
       p="10px 15px"
-      h="50px"
       alignItems="center"
       rounded="md"
       display="flex">
-      <Checkbox isChecked={completed} colorScheme="green" mr="auto" />
-      <Text m="0 auto">{title}</Text>
+      {completed ? (
+        <Checkbox isChecked={completed} colorScheme="green" mr="auto" />
+      ) : (
+        <Icon as={DragHandleIcon} mr="auto" />
+      )}
+
+      <Text fontSize="14px" textAlign="center" m="0 auto">
+        {title}
+      </Text>
       <Box ml="auto">
-        <IconButton
-          size="xl"
-          cursor="pointer"
-          as={CloseIcon}
-          onClick={() => dispatch(fetchDeleteTodo({ id: id.toString() }))}
-          aria-label="delete todos"
-        />
+        <CloseButton size="xl" cursor="pointer" onClick={DeleteTodo} />
       </Box>
     </Box>
   );

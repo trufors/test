@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { IdParams } from '../../types';
 import { selectPhotosById } from '../../store/slices/photos/selectors';
 import { fetchPhotos } from '../../store/slices/photos/asyncThunkPhotos';
-import { Photo } from '../../components/Photo';
+import { Photo } from '../Photo';
 import { setActiveAlbum } from '../../store/slices/albums/slice';
 
 type ActiveAlbum = {
