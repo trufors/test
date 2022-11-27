@@ -13,13 +13,9 @@ export const albumsSlice = createSlice({
   name: 'albums',
   initialState: albumsEntityAdapter.getInitialState({
     status: '',
-    inputValue: '',
     activeAlbumId: 0,
   }),
   reducers: {
-    setEditInput: (state, { payload }: PayloadAction<string>) => {
-      state.inputValue = payload;
-    },
     setActiveAlbum: (state, { payload }: PayloadAction<number>) => {
       state.activeAlbumId = payload;
     },
@@ -56,6 +52,6 @@ export const albumsSlice = createSlice({
   },
 });
 
-export const { setActiveAlbum, setEditInput } = albumsSlice.actions;
+export const { setActiveAlbum } = albumsSlice.actions;
 
 export default albumsSlice.reducer;

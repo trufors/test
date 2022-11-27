@@ -3,8 +3,7 @@ import { RootState } from '../..';
 import { HttpService } from '../../../api';
 import { AlbumType, IdParams } from '../../../types';
 import { LoadingStatuses } from '../../constants';
-
-import { selectAlbumById, selectAlbumsIds, selectAlbumsInputValue } from './selectors';
+import { selectAlbumsIds } from './selectors';
 
 export const fetchAlbums = createAsyncThunk<AlbumType[]>(
   'albums/fetchAlbum',
@@ -26,13 +25,11 @@ export const fetchDeleteAlbum = createAsyncThunk<number, IdParams>(
   },
 );
 
-export const fetchUpdateAlbum = createAsyncThunk<AlbumType, IdParams>(
+export const fetchUpdateAlbum = createAsyncThunk<AlbumType, AlbumType>(
   'albums/fetchUpdateAlbum',
-  async ({ id }, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const album = selectAlbumById(state, id);
-    album!.title = selectAlbumsInputValue(state);
-    await HttpService.patch(`/albums/${id}`, album!.title);
-    return album!;
+  async (album, thunkAPI) => {
+    const { data } = await HttpService.patch(`/albums/${album.id}`, { title: album.title });
+    console.log(data);
+    return album;
   },
 );

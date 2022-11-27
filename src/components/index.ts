@@ -7,3 +7,6 @@ export * from './StrictModeDroppable';
 export * from './TodoBoard';
 export * from './Album';
 export * from './ActiveAlbum';
+export * from './AlbumSkeleton';
+export * from './PhotoSkeleton';
+export * from './PostSkeleton';

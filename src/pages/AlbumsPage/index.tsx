@@ -4,23 +4,24 @@ import { FC, useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchAlbums } from '../../store/slices/albums/asyncThunkAlbums';
-import { selectAlbums } from '../../store/slices/albums/selectors';
+import { selectAlbums, selectAlbumsStatus } from '../../store/slices/albums/selectors';
 import { ActiveAlbum } from '../../components/ActiveAlbum';
 
 import { Album } from '../../components/Album';
+import { GridScrollContainer } from './styled';
+import { AlbumSkeleton } from '../../components';
+import { setActiveAlbum } from '../../store/slices/albums/slice';
 
-const GridScrollContainer = styled(Grid)`
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
-export const Albums: FC = () => {
+export const AlbumsPage: FC = () => {
   const dispatch = useAppDispatch();
   const { entities, ids, activeAlbumId } = useAppSelector(selectAlbums);
+  const status = useAppSelector(selectAlbumsStatus);
 
   useEffect(() => {
     dispatch(fetchAlbums());
+    return () => {
+      dispatch(setActiveAlbum(0));
+    };
   }, []);
 
   return (
@@ -29,7 +30,7 @@ export const Albums: FC = () => {
         Albums
       </Heading>
 
-      {activeAlbumId && <ActiveAlbum id={activeAlbumId} />}
+      {activeAlbumId ? <ActiveAlbum id={activeAlbumId} /> : null}
       <Flex color="#90a0b7" justifyContent="space-between" mb="10px">
         <Heading
           as="h3"
@@ -42,18 +43,17 @@ export const Albums: FC = () => {
         </Heading>
       </Flex>
       <GridScrollContainer
-        overflow="scroll"
         templateColumns="repeat(4, 1fr)"
         gap={10}
-        bgColor="white"
-        maxHeight={'850px'}
+        maxHeight={activeAlbumId ? '350px' : '850px'}
         boxShadow="xl"
-        rounded="md"
-        p="20px 25px">
-        {ids && ids.map((id) => <Album key={id} {...entities[id]!} />)}
+        rounded="md">
+        {status === 'loading'
+          ? [...new Array(8)].map((item, id) => <AlbumSkeleton key={id} />)
+          : ids.map((id) => <Album key={id} {...entities[id]!} />)}
       </GridScrollContainer>
     </>
   );
 };
 
-// maxHeight={activeAlbum ? '350px' : '850px'}
+//

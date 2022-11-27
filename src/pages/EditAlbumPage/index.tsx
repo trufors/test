@@ -1,16 +1,16 @@
 import { Button, Flex, Grid, Heading, Input } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import { ChangeEvent, FC, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../hooks';
 
 import { selectPhotosById } from '../../store/slices/photos/selectors';
-import { setEditInput } from '../../store/slices/albums/slice';
-import { selectAlbumById, selectAlbumsInputValue } from '../../store/slices/albums/selectors';
+import { selectAlbumById } from '../../store/slices/albums/selectors';
 import { fetchPhotos } from '../../store/slices/photos/asyncThunkPhotos';
 import { fetchUpdateAlbum } from '../../store/slices/albums/asyncThunkAlbums';
 import { Photo } from '../../components/Photo';
+import { AlbumType, PhotoType } from '../../types';
 
 const GridScrollContainer = styled(Grid)`
   &::-webkit-scrollbar {
@@ -21,26 +21,28 @@ const GridScrollContainer = styled(Grid)`
 export const EditAlbumPage: FC = () => {
   const { albumId } = useParams();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const [inputValue, setInputValue] = useState('');
 
-  const photos = useAppSelector((state) => selectPhotosById(state, albumId!));
-  const currentAlbum = useAppSelector((state) => selectAlbumById(state, albumId!));
-  const value = useAppSelector(selectAlbumsInputValue);
+  const photos = useAppSelector((state) => selectPhotosById(state, albumId!)) as PhotoType[];
+  const currentAlbum = useAppSelector((state) => selectAlbumById(state, albumId!)) as AlbumType;
 
   useEffect(() => {
     dispatch(fetchPhotos({ id: albumId! }));
-    dispatch(setEditInput(currentAlbum!.title));
+    setInputValue(currentAlbum.title);
     return () => {
-      dispatch(setEditInput(''));
+      setInputValue('');
     };
   }, []);
 
-  const handlerInput = (e: ChangeEvent) => {
-    const target = e.target as HTMLInputElement;
-    dispatch(setEditInput(target.value));
-  };
-
   const saveChanges = () => {
-    dispatch(fetchUpdateAlbum({ id: albumId! }));
+    const album: AlbumType = {
+      userId: '1',
+      id: parseInt(albumId!),
+      title: inputValue,
+    };
+    dispatch(fetchUpdateAlbum(album));
+    navigate('/albums');
   };
 
   return (
@@ -56,7 +58,11 @@ export const EditAlbumPage: FC = () => {
           Save
         </Button>
       </Flex>
-      <Input value={value} onChange={handlerInput} placeholder="write your title" />
+      <Input
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder="write your title"
+      />
       <GridScrollContainer
         overflow="scroll"
         templateColumns="repeat(4, 1fr)"
