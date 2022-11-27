@@ -12,15 +12,11 @@ export const AlbumSkeleton: FC = () => {
       w="100%"
       h="300"
       p="20px">
-      <Flex flexDirection="column" justifyContent="space-between">
-        <Flex justifyContent="space-evenly" mb="25px">
-          <Stack>
-            <Skeleton height="30px" />
-            <Skeleton height="30px" />
-          </Stack>
-        </Flex>
+      <Stack>
+        <Skeleton height="30px" />
+        <Skeleton height="30px" />
         <Skeleton height="150px" />
-      </Flex>
+      </Stack>
     </GridItem>
   );
 };

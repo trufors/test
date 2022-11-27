@@ -1,16 +1,17 @@
-import React, { FC, RefObject, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { Box, CloseButton, Flex } from '@chakra-ui/react';
 import { IconButton } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { AlbumType, IdParams, PhotoType } from '../../types';
-import { selectPhotosById } from '../../store/slices/photos/selectors';
+import { AlbumType, PhotoType } from '../../types';
+import { selectPhotosById, selectPhotosStatus } from '../../store/slices/photos/selectors';
 import { fetchPhotos } from '../../store/slices/photos/asyncThunkPhotos';
 import { Photo } from '../Photo';
 import { setActiveAlbum } from '../../store/slices/albums/slice';
 import { BoxStyled, FlexContainerStyled, HeadingStyled } from './styled';
 import { selectAlbumById } from '../../store/slices/albums/selectors';
+import { PhotoSkeleton } from '../PhotoSkeleton';
 
 type ActiveAlbum = {
   id: number;
@@ -19,16 +20,18 @@ type ActiveAlbum = {
 export const ActiveAlbum: FC<ActiveAlbum> = ({ id }) => {
   const [offset, setOffset] = useState(0);
   const dispatch = useAppDispatch();
-  const { title } = useAppSelector((state) => selectAlbumById(state, id!.toString())) as AlbumType;
+  const currentAlbum = useAppSelector((state) =>
+    selectAlbumById(state, id!.toString()),
+  ) as AlbumType;
   const photos = useAppSelector((state) => selectPhotosById(state, id!.toString())) as PhotoType[];
   const sliderRef = useRef<HTMLDivElement>(null);
+  const status = useAppSelector(selectPhotosStatus);
 
   useEffect(() => {
     dispatch(fetchPhotos({ id: id.toString() }));
-  }, []);
+  }, [id]);
 
   const prevHandler = () => {
-    console.log(offset);
     const container = sliderRef.current as HTMLDivElement;
     container.childNodes.forEach((element) => {
       if (element === sliderRef.current!.firstChild) {
@@ -48,7 +51,7 @@ export const ActiveAlbum: FC<ActiveAlbum> = ({ id }) => {
   return (
     <>
       <Flex color="#90a0b7" justifyContent="space-between" mb="10px">
-        <HeadingStyled>{title}</HeadingStyled>
+        <HeadingStyled>{currentAlbum.title}</HeadingStyled>
         <CloseButton onClick={() => dispatch(setActiveAlbum(0))} />
       </Flex>
       <BoxStyled>
@@ -71,7 +74,11 @@ export const ActiveAlbum: FC<ActiveAlbum> = ({ id }) => {
               color="grey"
               w="240px"
               h="320px">
-              {photos ? photos.map((photo) => <Photo key={photo!.id} {...photo!} />) : ''}
+              {status === 'loading' ? (
+                <PhotoSkeleton />
+              ) : (
+                photos.map((photo) => <Photo key={photo!.id} {...photo!} />)
+              )}
             </Flex>
           </Box>
 

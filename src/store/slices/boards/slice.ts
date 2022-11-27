@@ -1,11 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { BoardsState, CreateTodoParams, TodoListType, TodoType } from '../../../types';
+import {
+  BoardsState,
+  CreateTodoParams,
+  DragTodoBoard,
+  TodoListType,
+  TodoType,
+} from '../../../types';
 import { RootState } from '../..';
 import { todosSlice } from '../todos/slice';
 
 const initialState: BoardsState = {
-  status: 'idle',
+  status: '',
   boards: [
     { id: '1', todos: [] as TodoType[] },
     { id: '2', todos: [] as TodoType[] },
@@ -33,9 +39,6 @@ export const boardsSlice = createSlice({
         todo.completed = !todo.completed;
       }
     },
-    setTodosLists(state, { payload }: PayloadAction<TodoListType[]>) {
-      state.boards = payload;
-    },
     updateTodosListById(state, { payload }: PayloadAction<TodoListType>) {
       const board = state.boards[parseInt(payload.id)];
       board.todos = payload.todos;
@@ -61,7 +64,6 @@ export const {
   updateTodosListById,
   updateTodosInProgress,
   updateTodosCompleted,
-  setTodosLists,
 } = boardsSlice.actions;
 
 export const selectBoards = (state: RootState) => {

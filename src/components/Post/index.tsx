@@ -24,8 +24,16 @@ export const Post: FC<PostType> = ({ title, id, body }) => {
   const { isOpen, onToggle } = useDisclosure();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   return (
-    <Card boxShadow="xl" rounded="md" mb="25px" bg="white" w="100%" p="20px">
+    <Card
+      border="1px solid lightgrey"
+      boxShadow="xl"
+      rounded="md"
+      mb="25px"
+      bg="white"
+      w="100%"
+      p="20px">
       <CardHeader display="flex" justifyContent="space-between">
         <Heading size="md">{title}</Heading>
         <ButtonGroup>

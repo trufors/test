@@ -10,3 +10,4 @@ export * from './ActiveAlbum';
 export * from './AlbumSkeleton';
 export * from './PhotoSkeleton';
 export * from './PostSkeleton';
+export * from './CommentsSkeleton';

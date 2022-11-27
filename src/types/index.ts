@@ -52,3 +52,8 @@ export type CreateTodoParams = {
   id: number;
   value: string;
 };
+export type DragTodoBoard = {
+  id: number;
+  startId: number;
+  endId: number;
+};

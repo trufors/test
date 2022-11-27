@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { Layout } from './layout';
 import { AlbumsPage, PostFormPage, PostsPage, TodosPage } from './pages';
@@ -9,6 +9,7 @@ const App: FC = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+        <Route index element={<Navigate to="posts" replace />} />
         <Route path="/posts" element={<PostsPage />} />
         <Route path="/posts/create" element={<PostFormPage />} />
         <Route path="/posts/:postId/edit" element={<PostFormPage />} />

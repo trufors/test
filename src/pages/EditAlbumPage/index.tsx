@@ -5,12 +5,13 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../hooks';
 
-import { selectPhotosById } from '../../store/slices/photos/selectors';
+import { selectPhotosById, selectPhotosStatus } from '../../store/slices/photos/selectors';
 import { selectAlbumById } from '../../store/slices/albums/selectors';
 import { fetchPhotos } from '../../store/slices/photos/asyncThunkPhotos';
 import { fetchUpdateAlbum } from '../../store/slices/albums/asyncThunkAlbums';
 import { Photo } from '../../components/Photo';
 import { AlbumType, PhotoType } from '../../types';
+import { PhotoSkeleton } from '../../components';
 
 const GridScrollContainer = styled(Grid)`
   &::-webkit-scrollbar {
@@ -26,6 +27,7 @@ export const EditAlbumPage: FC = () => {
 
   const photos = useAppSelector((state) => selectPhotosById(state, albumId!)) as PhotoType[];
   const currentAlbum = useAppSelector((state) => selectAlbumById(state, albumId!)) as AlbumType;
+  const status = useAppSelector(selectPhotosStatus);
 
   useEffect(() => {
     dispatch(fetchPhotos({ id: albumId! }));
@@ -61,9 +63,14 @@ export const EditAlbumPage: FC = () => {
       <Input
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
-        placeholder="write your title"
+        placeholder="Write your title"
+        bgColor="white"
+        boxShadow="xl"
+        rounded="md"
+        mb="30px"
       />
       <GridScrollContainer
+        border="1px solid lightgrey"
         overflow="scroll"
         templateColumns="repeat(4, 1fr)"
         gap={10}
@@ -72,7 +79,9 @@ export const EditAlbumPage: FC = () => {
         boxShadow="xl"
         rounded="md"
         p="20px 25px">
-        {photos && photos.map((photo) => <Photo key={photo!.id} {...photo!} />)}
+        {status === 'loading'
+          ? [...new Array(12)].map((_, id) => <PhotoSkeleton key={id} />)
+          : photos.map((photo) => <Photo key={photo!.id} {...photo!} />)}
       </GridScrollContainer>
     </>
   );

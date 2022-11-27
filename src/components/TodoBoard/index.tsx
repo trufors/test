@@ -1,33 +1,24 @@
 import { FC, useEffect } from 'react';
 import { DragDropContext, Draggable, DropResult } from 'react-beautiful-dnd';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Skeleton, Text } from '@chakra-ui/react';
 import {
   selectTodosCompleted,
   selectTodosNonCompleted,
   selectTodosStatus,
 } from '../../store/slices/todos/selectors';
-
 import { fetchUpdateTodo } from '../../store/slices/todos/asyncThunkTodos';
+import { changeCompletedTodo, selectBoards } from '../../store/slices/boards/slice';
 import {
-  changeCompletedTodo,
-  selectBoards,
-  setTodosLists,
   updateTodosCompleted,
   updateTodosInProgress,
   updateTodosListById,
 } from '../../store/slices/boards/slice';
 import { TodoListType, TodoType } from '../../types';
 import { StrictModeDroppable } from '../StrictModeDroppable';
-import styled from '@emotion/styled';
-
 import { Todo } from '../Todo';
-
-const ScrollContainer = styled(Box)`
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
+import { batch } from 'react-redux';
+import { ScrollContainer } from './styled';
 
 export const TodoBoard: FC = () => {
   const dispatch = useAppDispatch();
@@ -35,15 +26,14 @@ export const TodoBoard: FC = () => {
 
   const completedTodos = useAppSelector(selectTodosCompleted) as TodoType[];
   const inProgressTodos = useAppSelector(selectTodosNonCompleted) as TodoType[];
+  const todoboard = useAppSelector(selectBoards) as TodoListType[];
 
   useEffect(() => {
-    dispatch(updateTodosCompleted(completedTodos));
-    dispatch(updateTodosInProgress(inProgressTodos));
+    batch(() => {
+      dispatch(updateTodosCompleted(completedTodos));
+      dispatch(updateTodosInProgress(inProgressTodos));
+    });
   }, [status]);
-
-  console.log(status);
-
-  const todoboard = useAppSelector(selectBoards) as TodoListType[];
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -68,7 +58,19 @@ export const TodoBoard: FC = () => {
       dispatch(changeCompletedTodo(removed.id));
 
       dispatch(fetchUpdateTodo({ id: removed.id.toString() }));
-      setTodosLists(todoboard);
+    }
+    if (source.droppableId === destination.droppableId) {
+      const sourceColId = todoboard!.findIndex((board) => board.id === source.droppableId);
+
+      const sourceCol = todoboard[sourceColId];
+
+      const sourceTodos = [...sourceCol.todos];
+
+      const [removed] = sourceTodos.splice(source.index, 1);
+
+      sourceTodos.splice(destination.index, 0, removed);
+
+      dispatch(updateTodosListById({ id: sourceColId.toString(), todos: sourceTodos }));
     }
   };
 

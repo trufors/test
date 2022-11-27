@@ -19,6 +19,7 @@ export const commentsSlice = createSlice({
         state.status = LoadingStatuses.LOADING;
       })
       .addCase(fetchComments.fulfilled, (state, { payload }) => {
+        state.status = LoadingStatuses.SUCCESS;
         commentsEntityAdapter.addMany(state, payload);
       })
 

@@ -12,7 +12,7 @@ export const TitleStyled = styled.h2`
   font-size: 24px;
   line-height: 36px;
   height: 36px;
-  color: var(--dark-blue);
+  color: #334d6e;
   margin-top: 0;
   margin-bottom: 32px;
   text-transform: uppercase;

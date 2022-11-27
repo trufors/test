@@ -1,33 +1,9 @@
-import { Flex } from '@chakra-ui/react';
-import styled from '@emotion/styled';
 import { FC } from 'react';
 import { useAppSelector } from '../../hooks';
-import { selectPosts } from '../../store/slices/posts/selectors';
-
+import { selectPostsEntities, selectPostsIds } from '../../store/slices/posts/selectors';
 import { Post } from '../Post';
-
-const FlexScrollContainer = styled(Flex)`
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
+import { FlexScrollContainer } from '../../pages/PostsPage/styled';
 
 export const Posts: FC = () => {
-  const { entities, ids } = useAppSelector(selectPosts);
-  return (
-    <>
-      <FlexScrollContainer
-        bgColor="white"
-        overflow="scroll"
-        maxHeight="850px"
-        boxShadow="xl"
-        rounded="md"
-        flexDirection="column"
-        p="20px 25px">
-        {ids.map((id) => (
-          <Post key={id} {...entities[id]!} />
-        ))}
-      </FlexScrollContainer>
-    </>
-  );
+  return <></>;
 };

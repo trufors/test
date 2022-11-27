@@ -20,6 +20,7 @@ export const Album: FC<AlbumType> = ({ title, id }) => {
         </ButtonGroup>
       </Flex>
       <Flex
+        cursor="pointer"
         bg="white"
         onClick={() => dispatch(setActiveAlbum(id))}
         flexDirection="column"

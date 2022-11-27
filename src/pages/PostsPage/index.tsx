@@ -1,15 +1,22 @@
 import { Flex, Heading, Button } from '@chakra-ui/react';
 import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import { useAppDispatch } from '../../hooks';
-
-import { Posts } from '../../components';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { Post, PostSkeleton } from '../../components';
 import { fetchPosts } from '../../store/slices/posts/asyncThunkPosts';
+import {
+  selectPostsEntities,
+  selectPostsIds,
+  selectPostsStatus,
+} from '../../store/slices/posts/selectors';
+import { FlexScrollContainer } from './styled';
 
 export const PostsPage: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const status = useAppSelector(selectPostsStatus);
+  const entities = useAppSelector(selectPostsEntities);
+  const ids = useAppSelector(selectPostsIds);
 
   useEffect(() => {
     dispatch(fetchPosts());
@@ -38,7 +45,18 @@ export const PostsPage: FC = () => {
         </Button>
       </Flex>
 
-      <Posts />
+      <FlexScrollContainer
+        bgColor="white"
+        overflow="scroll"
+        maxHeight="850px"
+        boxShadow="xl"
+        rounded="md"
+        flexDirection="column"
+        p="20px 25px">
+        {status === 'loading'
+          ? [...new Array(8)].map((id) => <PostSkeleton key={id} />)
+          : ids.map((id) => <Post key={id} {...entities[id]!} />)}
+      </FlexScrollContainer>
     </>
   );
 };
