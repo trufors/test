@@ -9,12 +9,12 @@ import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <ChakraProvider>
-      <Provider store={store}>
-        <BrowserRouter>
+    <BrowserRouter>
+      <ChakraProvider>
+        <Provider store={store}>
           <App />
-        </BrowserRouter>
-      </Provider>
-    </ChakraProvider>
+        </Provider>
+      </ChakraProvider>
+    </BrowserRouter>
   </StrictMode>,
 );
